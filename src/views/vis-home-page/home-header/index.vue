@@ -1,7 +1,9 @@
 <template>
     <div class="vis-homeHeader">
-        <div class="homeHeader_time">
-            {{ timeData }}
+        <div class="homeHeader-left">
+            <div class="homeHeader-left_time">
+                {{ timeData }}
+            </div>
         </div>
         <span class="homeHeader_title">
             邯郸区司法局指挥中心
@@ -20,28 +22,40 @@ export default {
         }
     },
     mounted() {
-        this.getTimeData()
+        setInterval(() => {
+            this.getTimeData()
+        }, 1000)
     },
     methods: {
         getTimeData() {
-
+            let tempTime = dayjs(new Date()).valueOf()
+            this.timeData = moment(tempTime).format('YYYY-MM-DD HH:mm:ss')
         }
     }
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .vis-homeHeader {
     width: 100%;
     height: 100%;
-    background: url(../../../assets/homePage/header.png) no-repeat center center;
-    background-size: 100% 100%;
+    color: #fff;
+    padding: 0 44px;
+}
+.homeHeader-left {
+    /* width: ; */
+    &_time {
+        width: 1000px;
+        height: 100px;
+    }
 }
 .homeHeader_title {
-    line-height: 100%;
     color: #fff;
     display: inline-block;
-    margin: 0 auto;
+    margin: auto;
+    font-size: 140px;
+    font-weight: bold;
+    letter-spacing: 15px;
 
 }
 </style>

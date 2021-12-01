@@ -28,7 +28,9 @@ export default {
 }
 .vis-homePage_header {
     width: 100%;
-    height: 10%;
-    /* height: 296px; */
+    /* height: 10%; */
+    height: 296px;
+    background: url(../../assets/homePage/header.png) no-repeat center center;
+    background-size: 100% 100%;
 }
 </style>
