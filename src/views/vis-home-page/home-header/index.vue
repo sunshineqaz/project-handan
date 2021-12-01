@@ -29,7 +29,8 @@ export default {
     methods: {
         getTimeData() {
             let tempTime = dayjs(new Date()).valueOf()
-            this.timeData = moment(tempTime).format('YYYY-MM-DD HH:mm:ss')
+            this.timeData = dayjs(tempTime).format('YYYY-MM-DD HH:mm:ss')
+            console.log(this.timeData, 'dafa')
         }
     }
 }
