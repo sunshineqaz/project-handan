@@ -1,9 +1,26 @@
 <template>
     <div class="vis-homeHeader">
         <div class="homeHeader-left">
-            <div class="homeHeader-left_time">
-                {{ timeData }}
-            </div>
+            <!-- <div class="homeHeader-left_time"> -->
+                <!-- {{ timeData }} -->
+            <!-- </div> -->
+            <el-row :gutter="20">
+                <el-col :span="6" class="homeHeader-left_time">
+                    {{ timeData }}
+                </el-col>
+                <el-col :span="4">
+                    aaa
+                </el-col>
+                <el-col :span="4">
+                   bbb
+                </el-col>
+                <el-col :span="4">
+                    ccc
+                </el-col>
+                <el-col :span="4">
+                    ddd
+                </el-col>
+            </el-row>
         </div>
         <span class="homeHeader_title">
             邯郸区司法局指挥中心
@@ -30,7 +47,6 @@ export default {
         getTimeData() {
             let tempTime = dayjs(new Date()).valueOf()
             this.timeData = dayjs(tempTime).format('YYYY-MM-DD HH:mm:ss')
-            console.log(this.timeData, 'dafa')
         }
     }
 }
@@ -44,11 +60,26 @@ export default {
     padding: 0 44px;
 }
 .homeHeader-left {
-    /* width: ; */
-    &_time {
-        width: 1000px;
-        height: 100px;
-    }
+    width: 35%;
+    height: 150px;
+    margin: auto;
+    background: #fff;
+    margin-top: 43px;
+    float: left;
+    .el-row {
+        width: 100%;
+        height: 100%;
+        .el-col {
+            height: 100%;
+            font-weight: 400;
+            color: #18A1F4;
+            line-height: 25px;
+            font-size: 50px;
+        }
+        .el-col:first-child {
+            font-size: 72px;
+        }
+    } 
 }
 .homeHeader_title {
     color: #fff;
