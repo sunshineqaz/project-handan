@@ -5,7 +5,7 @@
             <sign-result></sign-result>
         </div>
         <div class="homeContainer_map">
-            地图
+            <china-map></china-map>
         </div>
         <div class="homeContainer_charts">
             <abnormal-table></abnormal-table>
@@ -19,12 +19,14 @@ import signResultTotal from '../sign-result-total'
 import signResult from '../sign-result'
 import abnormalTable from '../abnormal-table'
 import trailTable from '../trail-table'
+import chinaMap from './china-map'
 export default {
     components: {
         signResultTotal,
         signResult,
         abnormalTable,
-        trailTable
+        trailTable,
+        chinaMap
     }
 }
 </script>
