@@ -1,20 +1,30 @@
 <template>
     <div class="vis-homeContainer">
         <div class="homeContainer_charts">
-            左侧
+            <sign-result-total></sign-result-total>
+            <sign-result></sign-result>
         </div>
         <div class="homeContainer_map">
             地图
         </div>
         <div class="homeContainer_charts">
-            右侧
+            <abnormal-table></abnormal-table>
+            <trail-table></trail-table>
         </div>
     </div>
 </template>
 
 <script>
+import signResultTotal from '../sign-result-total'
+import signResult from '../sign-result'
+import abnormalTable from '../abnormal-table'
+import trailTable from '../trail-table'
 export default {
     components: {
+        signResultTotal,
+        signResult,
+        abnormalTable,
+        trailTable
     }
 }
 </script>
@@ -28,7 +38,6 @@ export default {
     .homeContainer_charts {
         width: 2000px;
         height: 100%;
-        background: red;
     }
     .homeContainer_map {
         width: 3520px;
