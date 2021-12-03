@@ -59,7 +59,13 @@ export default {
         margin-left: 20px;
     }
     &_filters {
-
+        width: 1900px;
+        height: 828px;
+        padding: 0;
+        overflow: hidden;
+        float: left;
+        margin-top: 40px;
+        margin-left: 50px;
     }
 }
 </style>

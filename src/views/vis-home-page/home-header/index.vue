@@ -14,7 +14,31 @@
             邯郸区司法局指挥中心
         </span>
         <div class="homeHeader-right">
-
+            <div class="homeHeader-right_select">
+                <el-select v-model="filterData.justice">
+                    <el-option v-for="(item, index) in justiceOpts" :key="index" :value="item.value" :label="item.label"></el-option>
+                </el-select>
+            </div>
+            <div class="homeHeader-right_select">
+                <el-select v-model="filterData.area" placeholder="请选择司法所">
+                    <el-option v-for="(item, index) in areaOpts" :key="index" :value="item.value" :label="item.label"></el-option>
+                </el-select>
+            </div>
+            <div class="homeHeader-right_select">
+                <el-select v-model="filterData.name" placeholder="请选择人员姓名">
+                    <el-option v-for="(item, index) in peopleOpts" :key="index" :value="item.value" :label="item.label"></el-option>
+                </el-select>
+            </div>
+            <div class="homeHeader-right_time">
+                <div class="time_tip">刷新倒计时</div>
+                <div>
+                    {{ timeOver }}
+                </div>
+            </div>
+            <div class="homeHeader-right_buttons">
+                <el-button type="primary" class="fullScreen"></el-button>
+                <el-button type="primary" class="loginOut"></el-button>
+            </div>
         </div>
     </div>
 </template>
@@ -26,6 +50,8 @@ export default {
     data() {
         return {
             timeData: '', // 系统当前时间显示
+            timeOver: '', // 倒计时时间
+            maxtime: 5 * 60,
             tabData: [
                 {
                     name: 'first',
@@ -44,28 +70,92 @@ export default {
                     text: '系统运行监控'
                 }
             ],
-            activeTab: 'first'
+            activeTab: 'first', // 默认选中当前页
+            filterData: {
+                justice: '1', // 司法局 
+                area: '', // 司法所
+                name: '' // 人员
+            },
+            justiceOpts: [
+                {
+                    label: '邯郸区司法局',
+                    value: '1'
+                }
+            ],
+            areaOpts: [
+                {
+                    label: '邯郸区司法所',
+                    value: '1'
+                },
+                {
+                    label: '邯郸区司法所',
+                    value: '2'
+                },
+                {
+                    label: '邯郸区司法所',
+                    value: '3'
+                }
+            ],
+            peopleOpts: [
+                {
+                    label: '航三',
+                    value: '1'
+                },
+                {
+                    label: '航三航三',
+                    value: '2'
+                },
+                {
+                    label: '航三航三航三',
+                    value: '3'
+                }
+            ],
+            curTime: null,
+            overTime: null
         }
     },
     mounted() {
-        setInterval(() => {
+        this.getTimeData()
+        this.curTime = setInterval(() => {
             this.getTimeData()
         }, 1000)
+        this.getTimeOver()
+        this.overTime = setInterval(() => {
+            this.getTimeOver()
+        }, 5 * 60 * 1000)
     },
     methods: {
+        // 当前时间
         getTimeData() {
             let tempTime = dayjs(new Date()).valueOf()
             this.timeData = dayjs(tempTime).format('YYYY-MM-DD HH:mm:ss')
+        },
+        // 倒计时
+        getTimeOver() {
+            let timer = setInterval(() => {
+                if (this.maxtime >= 0) {
+                    let minutes = Math.floor(this.maxtime / 60);
+                    let seconds = Math.floor(this.maxtime % 60) > 9 ? Math.floor(this.maxtime % 60) : '0' + Math.floor(this.maxtime % 60);
+                    let msg = '00:0' + minutes + ":" + seconds;
+                    --this.maxtime;
+                    this.timeOver = msg
+                } else{
+                    clearInterval(timer);
+                }
+            }, 1000)
         }
+    },
+    beforeDestroy() {
+        clearInterval(this.curTime);
+        clearInterval(this.overTime);
     }
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 .vis-homeHeader {
-    width: 100%;
+    width: calc(100% - 88px);
     height: 100%;
-    color: #fff;
     padding: 0 44px;
     .homeHeader-left {
         width: 35%;
@@ -116,9 +206,72 @@ export default {
     .homeHeader-right {
         width: 35%;
         height: 150px;
-        background: #fff;
         float: right;
         margin-top: 43px;
+        display: flex;
+        &_select {
+            width: 590px;
+            height: 150px;
+            background: url(../../../assets/homePage/filter.png) no-repeat center center;
+            background-size: 100% 100%;
+            margin-right: 78px;
+            .el-select {
+                width: 100%;
+                .el-input__inner {
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    background: none;
+                    height: 150px;
+                    font-size: 50px;
+                    font-family: Microsoft YaHei;
+                    font-weight: 400;
+                    color: #18A1F4;
+                    line-height: 150px;
+                    padding-left: 38px;
+                }
+                .el-input__suffix {
+                    padding-right: 38px;
+                }
+                .el-input__icon {
+                    font-size: 50px;
+                    width: 50px;
+                    color: #18A1F4;
+                }
+                .el-input__inner::-webkit-input-placeholder {
+                    color: #18A1F4;
+                }
+            }
+        }
+        &_time {
+            width: 332px;
+            margin-right: 78px;
+            font-size: 72px;
+            font-family: zcoolqingkehuangyouti;
+            font-weight: 400;
+            color: #18A1F4;
+            text-align: center;
+            .time_tip {
+                font-size: 28px;
+            }
+        }
+        &_buttons {
+            .el-button {
+                width: 96px;
+                height: 96px;
+                background-size: 38px;
+                background-repeat: no-repeat;
+                background-position: center center;
+                margin-top: 27px;
+            }
+            .fullScreen {
+                background-image: url(../../../assets/homePage/fullScreen.svg);
+                margin-right: 33px;
+            }
+            .loginOut {
+                background-image: url(../../../assets/homePage/loginOut.svg);
+            }
+        }
     }
 }
 </style>
