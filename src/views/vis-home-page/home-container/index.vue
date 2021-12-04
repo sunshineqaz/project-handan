@@ -44,7 +44,6 @@ export default {
     .homeContainer_map {
         width: 3520px;
         height: 100%;
-        background: coral;
     }
 }
 </style>
