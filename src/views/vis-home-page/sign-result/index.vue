@@ -7,11 +7,21 @@
             CHECK IN RESULTS
         </div>
         <ul class="signList_filters">
-            <li v-for="(item, index) in signList" :key="index" :class="'sign_' + item.status">
+            <li v-for="(item, index) in signList" :key="index">
                 <div class="filters_photo">
                     <img src="" alt="">
                 </div>
-                <div class="filters_contain">{{ item.text }}</div>
+                <div class="filters_contain">
+                    <div class="filters_contain_name">{{ item.name }} | {{ item.tel }}</div>
+                    <div class="filters_contain_detail">
+                        机构：{{ item.part }} &nbsp;&nbsp; 签到时间：{{ item.time }}
+                        <br>
+                        签到地址： {{ item.addr }}
+                    </div>
+                    <div class="filters_contain_status" :class="'sign_' + item.status">
+                        {{ item.text }}
+                    </div>
+                </div>
             </li>
         </ul>
     </div>
@@ -105,10 +115,12 @@ export default {
         transform: translate(-50%, -50%);
         padding: 0;
         overflow: hidden;
+        overflow-y: auto;
         > li {
             width: 100%;
             height: 245px;
             margin-bottom: 20px;
+            position: relative;
             .filters_photo {
                 width: 245px;
                 height: 245px;
@@ -129,9 +141,41 @@ export default {
                 color: #FFFFFF;
                 background: url(../../../assets/homePage/signContain.png) no-repeat center center;
                 background-size: 100% 100%;
-                height: 100%;
+                width: calc(100% - 381px);
+                height: calc(100% - 64px);
                 float: left;
-                width: calc(100% - 277px);
+                padding: 32px 52px 32px 52px;
+                text-align: left;
+                &_name {
+                    font-size: 50px;
+                    font-weight: bold;
+                    margin-bottom: 30px;
+                }
+                &_status {
+                    width: 294px;
+                    height: 147px;
+                    line-height: 147px;
+                    padding-left: 81px;
+                    background-size: 100% 100%;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    position: absolute;
+                    top: 50%;
+                    right: 68px;
+                    transform: translateY(-50%);
+                }
+                .sign_success {
+                    background-image: url('../../../assets/homePage/successStatus.png');
+                }
+                .sign_wait {
+                    background-image: url('../../../assets/homePage/waitStatus.png');
+                }
+                .sign_failed {
+                    background-image: url('../../../assets/homePage/failedStatus.png');
+                }
+                .sign_delay {
+                    background-image: url('../../../assets/homePage/outStatus.png');
+                }
             }
         }
     }
