@@ -11,6 +11,7 @@ import * as echarts from 'echarts';
 Vue.prototype.$echarts = echarts;
 
 import axios from 'axios';
+axios.defaults.baseURL = process.env.API_ROOT;
 Vue.prototype.$axios = axios;
 
 Vue.config.productionTip = false

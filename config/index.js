@@ -10,7 +10,17 @@ module.exports = {
         // Paths
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
-        proxyTable: {},
+        proxyTable: {
+            proxy: {
+                '/api': { // '/api'是代理标识，用于告诉node，url前面是/api的就是使用代理的
+                    target: 'http://211.90.38.17:38080', //目标地址，一般是指后台服务器地址
+                    changeOrigin: true,
+                    pathRewrite: {
+                        '^/api': '/api/v1/display'
+                    }
+                }
+            }
+        },
 
         // Various Dev Server settings
         host: 'localhost', // can be overwritten by process.env.HOST

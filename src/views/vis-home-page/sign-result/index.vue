@@ -6,24 +6,27 @@
         <div class="signList_titleEN">
             CHECK IN RESULTS
         </div>
-        <ul class="signList_filters">
-            <li v-for="(item, index) in signList" :key="index">
-                <div class="filters_photo">
-                    <img src="" alt="">
-                </div>
-                <div class="filters_contain">
-                    <div class="filters_contain_name">{{ item.name }} | {{ item.tel }}</div>
-                    <div class="filters_contain_detail">
-                        机构：{{ item.part }} &nbsp;&nbsp; 签到时间：{{ item.time }}
-                        <br>
-                        签到地址： {{ item.addr }}
+        <div class="scroll_box" id="scroll_box">
+            <ul class="signList_filters" id="signList_filters">
+                <li v-for="(item, index) in signList" :key="index">
+                    <div class="filters_photo">
+                        <img src="" alt="">
                     </div>
-                    <div class="filters_contain_status" :class="'sign_' + item.status">
-                        {{ item.text }}
+                    <div class="filters_contain">
+                        <div class="filters_contain_name">{{ item.name }} | {{ item.tel }}</div>
+                        <div class="filters_contain_detail">
+                            机构：{{ item.part }} &nbsp;&nbsp; 签到时间：{{ item.time }}
+                            <br>
+                            签到地址： {{ item.addr }}
+                        </div>
+                        <div class="filters_contain_status" :class="'sign_' + item.status">
+                            {{ item.text }}
+                        </div>
                     </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+            <ul class="signList_filters_copy" id="signList_filters_copy"></ul>
+        </div>
     </div>
 </template>
 
@@ -72,6 +75,27 @@ export default {
             tempIndex: 1, // 默认选中签到成功
         }
     },
+    mounted() {
+        this.scrollAnimation()
+    },
+    methods: {
+        scrollAnimation() {
+            let ul1 = document.getElementById("signList_filters");
+            let ul2 = document.getElementById("signList_filters_copy");
+            let ulbox = document.getElementById("scroll_box");
+            ul2.innerHTML = ul1.innerHTML;
+            ulbox.scrollTop = 0; // 开始无滚动时设为0
+            function Marquee(){ 
+                if(ulbox.scrollTop >= ul1.offsetHeight){
+                    ulbox.scrollTop=0; 
+                }
+                else{ 
+                    ulbox.scrollTop = ulbox.scrollTop + 1;
+                } 
+            }
+            setInterval(Marquee, 40)
+        }
+    }
 }
 </script>
 
@@ -106,7 +130,7 @@ export default {
         text-align: left;
         margin-left: 20px;
     }
-    &_filters {
+    .scroll_box {
         width: 1896px;
         height: 840px;
         position: absolute;
@@ -115,7 +139,8 @@ export default {
         transform: translate(-50%, -50%);
         padding: 0;
         overflow: hidden;
-        overflow-y: auto;
+    }
+    &_filters, &_filters_copy {
         > li {
             width: 100%;
             height: 245px;

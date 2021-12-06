@@ -24,7 +24,6 @@
 
 <script>
 import * as echarts from 'echarts'
-console.log(echarts, ';;;;;;;;;;')
 export default {
     data() {
         return {

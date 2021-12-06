@@ -16,12 +16,12 @@
         <div class="homeHeader-right">
             <div class="homeHeader-right_select">
                 <el-select v-model="filterData.justice">
-                    <el-option v-for="(item, index) in justiceOpts" :key="index" :value="item.value" :label="item.label"></el-option>
+                    <el-option v-for="(item, index) in justiceOpts" :key="index" :value="item.id" :label="item.deptName"></el-option>
                 </el-select>
             </div>
             <div class="homeHeader-right_select">
                 <el-select v-model="filterData.area" placeholder="请选择司法所">
-                    <el-option v-for="(item, index) in areaOpts" :key="index" :value="item.value" :label="item.label"></el-option>
+                    <el-option v-for="(item, index) in areaOpts" :key="index" :value="item.id" :label="item.deptName"></el-option>
                 </el-select>
             </div>
             <div class="homeHeader-right_select">
@@ -72,16 +72,11 @@ export default {
             ],
             activeTab: 'first', // 默认选中当前页
             filterData: {
-                justice: '1', // 司法局 
+                justice: '', // 司法局 
                 area: '', // 司法所
                 name: '' // 人员
             },
-            justiceOpts: [
-                {
-                    label: '邯郸区司法局',
-                    value: '1'
-                }
-            ],
+            justiceOpts: [],
             areaOpts: [
                 {
                     label: '邯郸区司法所',
@@ -123,6 +118,9 @@ export default {
         this.overTime = setInterval(() => {
             this.getTimeOver()
         }, 5 * 60 * 1000)
+        this.getJusticeData()
+        this.getAreaData()
+        this.getPeopleData()
     },
     methods: {
         // 当前时间
@@ -143,6 +141,25 @@ export default {
                     clearInterval(timer);
                 }
             }, 1000)
+        },
+        // 获取司法局列表
+        getJusticeData() {
+            this.$axios.get('/api/v1/display/dept/info?actorId=12749&deptId=2252').then(res => {
+                this.justiceOpts = [res.data.data]
+                this.filterData.justice = res.data.data.id
+            })
+        },
+        // 获取司法所列表
+        getAreaData() {
+            this.$axios.get('/api/v1/display/dept/list?actorId=12749&deptId=2252').then(res => {
+                this.areaOpts = res.data.data
+            })
+        },
+        // 获取人员列表
+        getPeopleData() {
+            this.$axios.get('/api/v1/display/user/list?actorId=12749&deptId=2252').then(res => {
+                this.areaOpts = res.data.data
+            })
         }
     },
     beforeDestroy() {
@@ -272,6 +289,20 @@ export default {
                 background-image: url(../../../assets/homePage/loginOut.svg);
             }
         }
+    }
+}
+.el-select-dropdown {
+    background: #000;
+    max-height: 580px !important;
+    .el-select-dropdown__wrap {
+        max-height: 580px !important;
+    }
+    .el-select-dropdown__item {
+        font-size: 50px;
+        color: #18A1F4;
+        height: 80px;
+        line-height: 80px;
+        padding: 0 30px;
     }
 }
 </style>
