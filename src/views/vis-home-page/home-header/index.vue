@@ -20,13 +20,13 @@
                 </el-select>
             </div>
             <div class="homeHeader-right_select">
-                <el-select v-model="filterData.area" placeholder="请选择司法所">
-                    <el-option v-for="(item, index) in areaOpts" :key="index" :value="item.id" :label="item.deptName"></el-option>
+                <el-select v-model="filterData.area" placeholder="请选择司法所" @change="getPeopleData">
+                    <el-option v-for="(item, index) in areaOpts" :key="index" :value="item.deptId" :label="item.deptName"></el-option>
                 </el-select>
             </div>
             <div class="homeHeader-right_select">
-                <el-select v-model="filterData.name" placeholder="请选择人员姓名">
-                    <el-option v-for="(item, index) in peopleOpts" :key="index" :value="item.value" :label="item.label"></el-option>
+                <el-select v-model="filterData.name" placeholder="请选择人员姓名" @change="changeUserData">
+                    <el-option v-for="(item, index) in peopleOpts" :key="index" :value="item.userId" :label="item.userName"></el-option>
                 </el-select>
             </div>
             <div class="homeHeader-right_time">
@@ -45,6 +45,7 @@
 
 <script>
 import dayjs from 'dayjs'
+import { mapActions } from 'vuex'
 export default {
     name: 'homeHeader',
     data() {
@@ -77,34 +78,8 @@ export default {
                 name: '' // 人员
             },
             justiceOpts: [],
-            areaOpts: [
-                {
-                    label: '邯郸区司法所',
-                    value: '1'
-                },
-                {
-                    label: '邯郸区司法所',
-                    value: '2'
-                },
-                {
-                    label: '邯郸区司法所',
-                    value: '3'
-                }
-            ],
-            peopleOpts: [
-                {
-                    label: '航三',
-                    value: '1'
-                },
-                {
-                    label: '航三航三',
-                    value: '2'
-                },
-                {
-                    label: '航三航三航三',
-                    value: '3'
-                }
-            ],
+            areaOpts: [],
+            peopleOpts: [],
             curTime: null,
             overTime: null
         }
@@ -120,9 +95,9 @@ export default {
         }, 5 * 60 * 1000)
         this.getJusticeData()
         this.getAreaData()
-        this.getPeopleData()
     },
     methods: {
+        ...mapActions(['changeOrgId', 'changeUserId']),
         // 当前时间
         getTimeData() {
             let tempTime = dayjs(new Date()).valueOf()
@@ -137,7 +112,8 @@ export default {
                     let msg = '00:0' + minutes + ":" + seconds;
                     --this.maxtime;
                     this.timeOver = msg
-                } else{
+                } else {
+                    this.maxtime = 5 * 60
                     clearInterval(timer);
                 }
             }, 1000)
@@ -156,10 +132,17 @@ export default {
             })
         },
         // 获取人员列表
-        getPeopleData() {
-            this.$axios.get('/api/v1/display/user/list?actorId=12749&deptId=2252').then(res => {
-                this.areaOpts = res.data.data
+        getPeopleData(val) {
+            this.changeOrgId(val)
+            this.changeUserId('')
+            this.filterData.name = ''
+            this.$axios.get('/api/v1/display/user/list?actorId=12749&deptId=' + val).then(res => {
+                this.peopleOpts = res.data.data.list
             })
+        },
+        // 选择人员
+        changeUserData(val) {
+            this.changeUserId(val)
         }
     },
     beforeDestroy() {
@@ -264,7 +247,7 @@ export default {
             width: 332px;
             margin-right: 78px;
             font-size: 72px;
-            font-family: zcoolqingkehuangyouti;
+            font-family: "HYGJM";
             font-weight: 400;
             color: #18A1F4;
             text-align: center;
@@ -292,16 +275,17 @@ export default {
     }
 }
 .el-select-dropdown {
-    background: #000;
-    max-height: 580px !important;
+    height: 767px;
+    background: #000000;
+    border: 4px solid #024F7E;
     .el-select-dropdown__wrap {
-        max-height: 580px !important;
+        max-height: 767px !important;
     }
     .el-select-dropdown__item {
         font-size: 50px;
-        color: #18A1F4;
-        height: 80px;
-        line-height: 80px;
+        color: #fff;
+        height: 150px;
+        line-height: 150px;
         padding: 0 30px;
     }
 }

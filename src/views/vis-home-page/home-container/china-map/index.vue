@@ -1,6 +1,9 @@
 <template>
     <div class="china_map_container">
         <div id="chinaChart"></div>
+        <div class="map_position" v-for="(item, index) in geoInfoData" :key="index" :style="{left: item[0] + 'px', top: item[1] + 'px'}">
+            sssss
+        </div>
         <div class="supervise_personal">
             <div class="supervise_personal_info">
                 <p class="supervise_personal_info_title">个人信息</p>
@@ -54,7 +57,8 @@ export default {
             geoCoordMap: {
                 '海门':[121.15,31.89],
                 '鄂尔多斯':[109.781327,39.608266],
-            }
+            },
+            geoInfoData: []
         }
     },
     methods: {
@@ -140,62 +144,9 @@ export default {
                     {
                         type: 'scatter',
                         coordinateSystem: 'geo',
-                        // tooltip: {
-                        //     show: true,
-                        //     formatter: (params) => {
-                        //         console.log(params, '...')
-                        //         var tipHtml = ''
-                        //         tipHtml = ' <div class="tooltip" style="word-wrap:break-word; white-space:pre-wrap !important;">'+
-                        //                 '<div class="horn">'+
-                        //                 '<div class="lt"></div>'+
-                        //                 '<div class="rb"></div>'+
-                        //                 '</div>'+
-                        //                 '<div class="phoneData">'+'用户'+params.data.name+'在'+params.data.name+'联网成功</div>'+
-                        //                 '</div>';
-                        //             return tipHtml
-                        //     }
-                        // },
-                        // label: {
-                        //     normal: {
-                        //         show: true,
-                        //         formatter: function (params) {
-                        //             var tipHtml = '';
-                        //             tipHtml = ' <div class="tooltip" style="word-wrap:break-word; white-space:pre-wrap !important;">'+
-                        //                 '<div class="horn">'+
-                        //                 '<div class="lt"></div>'+
-                        //                 '<div class="rb"></div>'+
-                        //                 '</div>'+
-                        //                 '<div class="phoneData">'+'用户'+params.name+'在'+params.name+'联网成功</div>'+
-                        //                 '</div>';
-                        //             return tipHtml
-                        //             // var name = params.name;
-                        //             // var text = `{fline|${name}}\n{tline|${name}}`;
-                        //             // return text;
-                        //         },
-                        //         color: '#fff',
-                        //         rich: {
-                        //             fline: {
-                        //                 padding: [0, 0],
-                        //                 color: '#fff',
-                        //                 fontSize: 44,
-                        //                 fontWeight: 400,
-                        //             },
-                        //             tline: {
-                        //                 padding: [0, 0],
-                        //                 color: '#fff',
-                        //                 fontSize: 40,
-                        //             },
-                        //         },
-                        //     },
-                        //     emphasis: {
-                        //         show: true,
-                        //     },
-                        // },
                         itemStyle: {
                             color: '#00FFF6',
                         },
-                        symbol: 'image://' + require('../../../../assets/map/signPop.png'),
-                        symbolSize: [648, 246],
                         symbolOffset: [0, -60],
                         z: 999,
                         data: convertData(this.dataValue),
@@ -203,7 +154,17 @@ export default {
                 ]
             };
             myChart.setOption(option);
-        }
+
+            // 获取系列
+            let seriesModel = myChart.getModel().getSeriesByIndex(option.series.length - 1)
+            // 获取地理坐标系实例
+            let coordSys = seriesModel.coordinateSystem;
+            // dataToPoint 相当于 getPosByGeo
+            for(let key in this.geoCoordMap) {
+                let point = coordSys.dataToPoint(this.geoCoordMap[key]);
+                this.geoInfoData.push(point)
+            }
+        },
     },
     mounted() {
         this.drawMap();
@@ -215,9 +176,17 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
+    position: relative;
     #chinaChart {
         width: 100%;
         height: 100%;
+    }
+    .map_position {
+        width: 648px;
+        height: 246px;
+        background: url(../../../../assets/map/signPop.png) no-repeat center center;
+        background-size: 100% 100%;
+        position: absolute;
     }
     .supervise_personal {
         position: absolute;

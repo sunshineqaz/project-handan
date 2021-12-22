@@ -7,12 +7,12 @@
             EXCEPTION LIST
         </div>
         <div class="abnormalTable_filters">
-            <el-table :data="tableData">
+            <el-table :data="tableData" ref="abnormalTable">
                 <el-table-column label="序号" type="index" width="200"></el-table-column>
-                <el-table-column label="姓名" prop="name"></el-table-column>
-                <el-table-column label="机构"></el-table-column>
-                <el-table-column label="异常信息"></el-table-column>
-                <el-table-column label="异常开始时间"></el-table-column>
+                <el-table-column label="姓名" prop="userName"></el-table-column>
+                <el-table-column label="机构" prop="deptName"></el-table-column>
+                <el-table-column label="异常信息" prop="exceName"></el-table-column>
+                <el-table-column label="异常开始时间" prop="createTime"></el-table-column>
             </el-table>
         </div>
     </div>
@@ -22,17 +22,19 @@
 export default {
     data() {
         return {
-            tableData: [
-                {
-                    name: '张三',
-                    tel: '15465897532',
-                    part: 'xxxxxsifasuo',
-                    time: '2125458965523',
-                    addr: '河北省',
-                    text: '签到成功',
-                    status: 'success'
-                }
-            ]
+            tableData: []
+        }
+    },
+    mounted() {
+        this.getData()
+    },
+    methods: {
+        // 获取数据
+        getData() {
+            this.$axios.get('/api/v1/display/location/exception/dept?actorId=12749&deptId=2252').then(res => {
+                let data = res.data.data
+                this.tableData = data
+            })
         }
     }
 }

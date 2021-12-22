@@ -30,22 +30,22 @@ export default {
             signDict: [
                 {
                     text: '签到成功',
-                    count: '1111111',
+                    count: 0,
                     status: 'success'
                 },
                 {
                     text: '等待签到',
-                    count: '1122222',
+                    count: 0,
                     status: 'wait'
                 },
                 {
                     text: '签到失败',
-                    count: '14444',
+                    count: 0,
                     status: 'failed'
                 },
                 {
                     text: '过期未签到',
-                    count: '1545',
+                    count: 0,
                     status: 'delay'
                 }
             ],
@@ -53,19 +53,30 @@ export default {
         }
     },
     mounted() {
+        this.getData()
         this.drawCharts()
     },
     methods: {
         handleFilter(params) {
-            console.log(params)
             this.tempIndex = params + 1
         },
+        // 获取数据
+        getData() {
+            this.$axios.get('/api/v1/display/check/summary/dept?actorId=12749&deptId=2252').then(res => {
+                let data = res.data.data
+                this.signDict[0].count = data.success
+                this.signDict[1].count = data.waiting
+                this.signDict[2].count = data.failed
+                this.signDict[3].count = data.expired
+            })
+        },
+        // 右侧图表
         drawCharts() {
             let dataArr = [
-                { name: "签到成功", value: 90 },
-                { name: "等待签到", value: 80 },
-                { name: "签到失败", value: 50 },
-                { name: "过期未签到", value: 30 }
+                { name: "签到成功", value: this.signDict[0].count },
+                { name: "等待签到", value: this.signDict[1].count },
+                { name: "签到失败", value: this.signDict[2].count },
+                { name: "过期未签到", value: this.signDict[3].count }
             ];
             let seriseData = [];
             dataArr.forEach((el, index) => {

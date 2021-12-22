@@ -7,7 +7,7 @@
             TRAJECTORY DESCRIPTION
         </div>
         <div class="trailTable_filters">
-            <el-table>
+            <el-table ref="trailTable">
                 <el-table-column label="序号"></el-table-column>
                 <el-table-column label="定位方式"></el-table-column>
                 <el-table-column label="定位状态"></el-table-column>
@@ -22,8 +22,20 @@
 export default {
     data() {
         return {
-
+            tableData: []
         }
+    },
+    mounted() {
+        this.getData()
+    },
+    methods: {
+        // 获取数据
+        getData() {
+            this.$axios.get('/api/v1/display/location/exception/dept?actorId=12749&deptId=2252').then(res => {
+                let data = res.data.data
+                this.tableData = data
+            })
+        },
     }
 }
 </script>

@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     data() {
         return {
@@ -76,9 +77,22 @@ export default {
         }
     },
     mounted() {
+        this.getData()
         this.scrollAnimation()
     },
+    computed: {
+        ...mapState(['orgId', 'userId']),
+    },
+    watch: {
+        orgId() {
+            this.getData()
+        },
+        userId(id) {
+            console.log(id, 'userIdddd')
+        }
+    },
     methods: {
+        // 滚动
         scrollAnimation() {
             let ul1 = document.getElementById("signList_filters");
             let ul2 = document.getElementById("signList_filters_copy");
@@ -94,7 +108,13 @@ export default {
                 } 
             }
             setInterval(Marquee, 40)
-        }
+        },
+        // 获取数据
+        getData() {
+            this.$axios.get(`/api/v1/display/check/dept?actorId=12749&deptId=${this.orgId}`).then(res => {
+                let data = res.data.data
+            })
+        },
     }
 }
 </script>
