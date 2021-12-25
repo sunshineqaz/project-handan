@@ -81,15 +81,16 @@ export default {
         this.scrollAnimation()
     },
     computed: {
-        ...mapState(['orgId', 'userId']),
+        ...mapState(['actorId', 'orgId', 'userId']),
     },
     watch: {
         orgId() {
             this.getData()
         },
         userId(id) {
-            console.log(id, 'userIdddd')
-            this.getData()
+            if (id) {
+                this.getData()
+            }
         }
     },
     methods: {
@@ -112,7 +113,9 @@ export default {
         },
         // 获取数据
         getData() {
-            this.$axios.get(`/api/v1/display/check/dept?actorId=12749&deptId=${this.orgId}`).then(res => {
+            let baseUrl = '/api/v1/display/check/'
+            let extendUrl = this.userId ? `user?actorId=${this.actorId}&userId=${this.userId}` : `dept?actorId=${this.actorId}&deptId=${this.orgId}`
+            this.$axios.get(baseUrl + extendUrl).then(res => {
                 let data = res.data.data
             })
         },

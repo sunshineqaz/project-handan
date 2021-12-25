@@ -1,10 +1,8 @@
 <template>
     <div class="china_map_container">
         <div id="chinaChart"></div>
-        <div class="map_position" v-for="(item, index) in geoInfoData" :key="index" :style="{left: item[0] + 'px', top: item[1] + 'px'}">
-            sssss
-        </div>
-        <div class="supervise_personal">
+        <div class="map_position" v-for="(item, index) in geoInfoData" :key="index" :style="{left: item[0] + 'px', top: item[1] + 'px'}" v-if="isShowPosition"></div>
+        <div class="supervise_personal" v-if="this.userId">
             <div class="supervise_personal_info">
                 <p class="supervise_personal_info_title">个人信息</p>
                 <div class="supervise_personal_info_content">
@@ -51,25 +49,27 @@ import { mapState } from 'vuex';
 export default {
     data() {
         return {
-            dataValue: [
-                {name: '海门', value: 9},
-                {name: '鄂尔多斯', value: 12},
-            ],
-            geoCoordMap: {
-                '海门':[121.15,31.89],
-                '鄂尔多斯':[109.781327,39.608266],
-            },
+            isShowPosition: false,
+            locationData: [],
             geoInfoData: [],
             personInfo: {}
         }
     },
     computed: {
-        ...mapState(['userId']),
+        ...mapState(['actorId', 'orgId', 'userId']),
     },
     watch: {
-        userId() {
-            this.getPersonInfo()
+        orgId(v) {
+            this.getLocationData()
+        },
+        userId(v) {
+            if (v) {
+                this.getPersonInfo()
+            }
         }
+    },
+    mounted() {
+        this.getLocationData()
     },
     methods: {
         drawMap() {
@@ -78,13 +78,9 @@ export default {
             let convertData = (data) => {
                 var res = [];
                 for (var i = 0; i < data.length; i++) {
-                    var geoCoord = this.geoCoordMap[data[i].name];
-                    if (geoCoord) {
-                        res.push({
-                            name: data[i].name,
-                            value: geoCoord.concat(data[i].value)
-                        });
-                    }
+                    res.push({
+                        value: [data[i].lng, data[i].lat]
+                    });
                 }
                 return res;
             };
@@ -143,23 +139,13 @@ export default {
                         data:[]
                     },
                     {
-                        type: 'scatter',
+                        type: 'effectScatter',
                         coordinateSystem: 'geo',
                         symbol: 'image://' + require('../../../../assets/map/point.png'),
                         symbolSize: [32, 41],
                         symbolOffset: [0, -20],
                         z: 9999,
-                        data: convertData(this.dataValue),
-                    },
-                    {
-                        type: 'scatter',
-                        coordinateSystem: 'geo',
-                        itemStyle: {
-                            color: '#00FFF6',
-                        },
-                        symbolOffset: [0, -60],
-                        z: 999,
-                        data: convertData(this.dataValue),
+                        data: convertData(this.locationData),
                     }
                 ]
             };
@@ -170,22 +156,23 @@ export default {
             // 获取地理坐标系实例
             let coordSys = seriesModel.coordinateSystem;
             // dataToPoint 相当于 getPosByGeo
-            for(let key in this.geoCoordMap) {
-                let point = coordSys.dataToPoint(this.geoCoordMap[key]);
+            this.locationData.forEach(v => {
+                let point = coordSys.dataToPoint([v.lng, v.lat]);
                 this.geoInfoData.push(point)
-            }
+            })
+        },
+        getLocationData() {
+            this.$axios.get(`/api/v1/display/location/list?actorId=${this.actorId}&deptId=${this.orgId}`).then(res => {
+                this.locationData = res.data.data
+                this.drawMap();
+            })
         },
         getPersonInfo() {
-            this.$axios.get(`/api/v1/display/user/detail?actorId=12749&userId=${this.userId}`).then(res => {
+            this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
                 let data = res.data.data
-                console.log(data, 'data-----------')
                 this.personInfo = data
             })
         }
-    },
-    mounted() {
-        this.drawMap();
-        this.getPersonInfo()
     }
 }
 </script>

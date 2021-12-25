@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     data() {
         return {
@@ -28,10 +29,13 @@ export default {
     mounted() {
         this.getData()
     },
+    computed: {
+        ...mapState(['actorId', 'userId'])
+    },
     methods: {
         // 获取数据
         getData() {
-            this.$axios.get('/api/v1/display/location/exception/dept?actorId=12749&deptId=2252').then(res => {
+            this.$axios.get(`/api/v1/display/location/path?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
                 let data = res.data.data
                 this.tableData = data
             })

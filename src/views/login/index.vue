@@ -4,12 +4,12 @@
             邯郸区司法局指挥中心
         </div>
         <div class="login-form">
-            <el-form>
-                <el-form-item>
-                    <el-input placeholder="输入登录账号"></el-input>
+            <el-form :model="loginForm" ref="loginForm" :rules="loginRules">
+                <el-form-item prop="account">
+                    <el-input v-model="loginForm.account" placeholder="输入登录账号"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-input placeholder="输入密码"></el-input>
+                <el-form-item prop="password">
+                    <el-input v-model="loginForm.password" placeholder="输入密码"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-input placeholder="输入验证码" style="width: 50%; float: left;"></el-input>
@@ -25,6 +25,20 @@
 export default {
     data() {
         return {
+            loginForm: {
+                account: '',
+                password: '',
+                key: '',
+                answer: ''
+            },
+            loginRules: {
+                account: {
+                    required: true, message: '请输入用户名', trigger: 'blur'
+                },
+                password: {
+                    required: true, message: '请输入密码', trigger: 'blur'
+                }
+            },
             captchaData: '' // 验证码
         }
     },
@@ -35,7 +49,7 @@ export default {
         // 获取验证码
         getCaptcha() {
             this.$axios.post('/api/v1/display/captcha/new', {
-                length: 6,
+                length: 4,
                 heigh: 150,
                 weight: 300,
             }).then(res => {
@@ -44,7 +58,14 @@ export default {
             })
         },
         goLogin() {
-            this.$router.push('homePage')
+            this.$refs.loginForm.validate((valid) => {
+                if (valid) {
+                    this.$axios.post('/api/v1/display/staff/login', this.loginForm).then(res => {
+                        console.log(res, 'res==============')
+                    })
+                    this.$router.push('homePage')
+                }
+            })
         }
     }
 }

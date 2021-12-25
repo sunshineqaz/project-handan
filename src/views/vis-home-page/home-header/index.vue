@@ -16,7 +16,7 @@
         <div class="homeHeader-right">
             <div class="homeHeader-right_select">
                 <el-select v-model="filterData.justice">
-                    <el-option v-for="(item, index) in justiceOpts" :key="index" :value="item.id" :label="item.deptName"></el-option>
+                    <el-option v-for="(item, index) in justiceOpts" :key="index" :value="item.deptId" :label="item.deptName"></el-option>
                 </el-select>
             </div>
             <div class="homeHeader-right_select">
@@ -36,8 +36,8 @@
                 </div>
             </div>
             <div class="homeHeader-right_buttons">
-                <el-button type="primary" class="fullScreen"></el-button>
-                <el-button type="primary" class="loginOut"></el-button>
+                <el-button type="primary" class="fullScreen" @click="handleScreen"></el-button>
+                <el-button type="primary" class="loginOut" @click="handleLoginOut"></el-button>
             </div>
         </div>
     </div>
@@ -45,7 +45,8 @@
 
 <script>
 import dayjs from 'dayjs'
-import { mapActions } from 'vuex'
+import screenfull from 'screenfull'
+import { mapActions, mapState } from 'vuex'
 export default {
     name: 'homeHeader',
     data() {
@@ -81,8 +82,12 @@ export default {
             areaOpts: [],
             peopleOpts: [],
             curTime: null,
-            overTime: null
+            overTime: null,
+            isFullscreen: false
         }
+    },
+    computed: {
+        ...mapState(['actorId'])
     },
     mounted() {
         this.getTimeData()
@@ -120,14 +125,15 @@ export default {
         },
         // 获取司法局列表
         getJusticeData() {
-            this.$axios.get('/api/v1/display/dept/info?actorId=12749&deptId=2252').then(res => {
+            this.$axios.get(`/api/v1/display/dept/info?actorId=${this.actorId}&deptId=2252`).then(res => {
                 this.justiceOpts = [res.data.data]
-                this.filterData.justice = res.data.data.id
+                this.filterData.justice = res.data.data.deptId
+                this.changeOrgId(this.filterData.justice)
             })
         },
         // 获取司法所列表
         getAreaData() {
-            this.$axios.get('/api/v1/display/dept/list?actorId=12749&deptId=2252').then(res => {
+            this.$axios.get(`/api/v1/display/dept/list?actorId=${this.actorId}&deptId=2252`).then(res => {
                 this.areaOpts = res.data.data
             })
         },
@@ -136,13 +142,26 @@ export default {
             this.changeOrgId(val)
             this.changeUserId('')
             this.filterData.name = ''
-            this.$axios.get('/api/v1/display/user/list?actorId=12749&deptId=' + val).then(res => {
+            this.$axios.get(`/api/v1/display/user/list?actorId=${this.actorId}&deptId=` + val).then(res => {
                 this.peopleOpts = res.data.data.list
             })
         },
         // 选择人员
         changeUserData(val) {
             this.changeUserId(val)
+        },
+        // 全屏
+        handleScreen() {
+            if (!screenfull.enabled) {
+                this.$message("您的浏览器不能全屏");
+                return false;
+            }
+            screenfull.toggle();
+            this.$message.success("全屏啦");
+        },
+        // 退出登录
+        handleLoginOut() {
+            this.$router.push('/')
         }
     },
     beforeDestroy() {

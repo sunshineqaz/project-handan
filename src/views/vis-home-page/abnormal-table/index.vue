@@ -19,10 +19,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     data() {
         return {
             tableData: []
+        }
+    },
+    computed: {
+        ...mapState(['actorId', 'orgId']),
+    },
+    watch: {
+        orgId() {
+            this.getData()
         }
     },
     mounted() {
@@ -31,7 +40,7 @@ export default {
     methods: {
         // 获取数据
         getData() {
-            this.$axios.get('/api/v1/display/location/exception/dept?actorId=12749&deptId=2252').then(res => {
+            this.$axios.get(`/api/v1/display/location/exception/dept?actorId=${this.actorId}&deptId=${this.orgId}`).then(res => {
                 let data = res.data.data
                 this.tableData = data
             })

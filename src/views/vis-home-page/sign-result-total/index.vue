@@ -28,7 +28,8 @@ import { mapState } from 'vuex';
 export default {
     data() {
         return {
-            signDict: [
+            signDict: [],
+            depthDict: [
                 {
                     text: '签到成功',
                     count: 0,
@@ -50,22 +51,48 @@ export default {
                     status: 'delay'
                 }
             ],
+            personDict: [
+                {
+                    text: '请假次数',
+                    count: 0,
+                    status: 'success'
+                },
+                {
+                    text: '定位失败次数',
+                    count: 0,
+                    status: 'wait'
+                },
+                {
+                    text: '关机次数',
+                    count: 0,
+                    status: 'failed'
+                },
+                {
+                    text: '脱区次数',
+                    count: 0,
+                    status: 'delay'
+                }
+            ],
             tempIndex: 1, // 默认选中签到成功
         }
     },
     computed: {
-        ...mapState(['orgId', 'userId']),
+        ...mapState(['actorId', 'orgId', 'userId']),
     },
     watch: {
         orgId() {
+            this.signDict = this.depthDict
             this.getData()
         },
         userId(id) {
-            console.log(id, 'userIdddd')
-            this.getData()
+            if (id) {
+                this.signDict = this.personDict
+                this.getData()
+            }
         }
     },
     mounted() {
+        this.signDict = this.depthDict
         this.getData()
         this.drawCharts()
     },
@@ -75,9 +102,8 @@ export default {
         },
         // 获取数据
         getData() {
-            let baseUrl = '/api/v1/display/check/summary/dept?actorId=12749&'
-            let extendUrl = this.userId ? `userId=${this.userId}` : `deptId=${this.orgId}`
-            console.log(this.userId, ';;;;')
+            let baseUrl = '/api/v1/display/check/summary/'
+            let extendUrl = this.userId ? `user?actorId=${this.actorId}&userId=${this.userId}` : `dept?actorId=${this.actorId}&deptId=${this.orgId}`
             this.$axios.get(baseUrl + extendUrl).then(res => {
                 let data = res.data.data
                 this.signDict[0].count = data.success
