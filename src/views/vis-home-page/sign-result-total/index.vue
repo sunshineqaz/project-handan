@@ -24,6 +24,7 @@
 
 <script>
 import * as echarts from 'echarts'
+import { mapState } from 'vuex';
 export default {
     data() {
         return {
@@ -52,6 +53,18 @@ export default {
             tempIndex: 1, // 默认选中签到成功
         }
     },
+    computed: {
+        ...mapState(['orgId', 'userId']),
+    },
+    watch: {
+        orgId() {
+            this.getData()
+        },
+        userId(id) {
+            console.log(id, 'userIdddd')
+            this.getData()
+        }
+    },
     mounted() {
         this.getData()
         this.drawCharts()
@@ -62,7 +75,10 @@ export default {
         },
         // 获取数据
         getData() {
-            this.$axios.get('/api/v1/display/check/summary/dept?actorId=12749&deptId=2252').then(res => {
+            let baseUrl = '/api/v1/display/check/summary/dept?actorId=12749&'
+            let extendUrl = this.userId ? `userId=${this.userId}` : `deptId=${this.orgId}`
+            console.log(this.userId, ';;;;')
+            this.$axios.get(baseUrl + extendUrl).then(res => {
                 let data = res.data.data
                 this.signDict[0].count = data.success
                 this.signDict[1].count = data.waiting

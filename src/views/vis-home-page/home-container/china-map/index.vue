@@ -11,30 +11,30 @@
                     <div class="portrait"></div>
                     <div class="content">
                         <div class="name_info">
-                            <span class="name">张三</span>
+                            <span class="name">{{ personInfo.userName }}</span>
                             <span class="type">矫正类别</span>
                             <span class="gz">管制</span>
                         </div>
                         <ul class="info_list">
                             <li>
                                 <span>机构：</span>
-                                <span>XXXX司法所</span>
+                                <span>{{ personInfo.deptName }}</span>
                             </li>
                             <li>
                                 <span>电话：</span>
-                                <span>18912341234</span>
+                                <span>{{ personInfo.phone }}</span>
                             </li>
                             <li>
                                 <span>签到地址：</span>
-                                <span>河北省邯郸市邯山区XX街道XX小区X楼</span>
+                                <span>{{ personInfo.homeAddr }}</span>
                             </li>
                             <li>
                                 <span>定位时间：</span>
-                                <span>2021-08-08 12:00:00</span>
+                                <span>{{ personInfo.ccStartTime }} - {{ personInfo.ccEndTime }}</span>
                             </li>
                             <li>
                                 <span>定位方式：</span>
-                                <span>电信基站</span>
+                                <span>{{ personInfo.operator }}</span>
                             </li>
                         </ul>
                         <div class="sign_result">签到失败</div>
@@ -47,6 +47,7 @@
 <script>
 import * as echarts from 'echarts';
 import JSON from './china.json';
+import { mapState } from 'vuex';
 export default {
     data() {
         return {
@@ -58,7 +59,16 @@ export default {
                 '海门':[121.15,31.89],
                 '鄂尔多斯':[109.781327,39.608266],
             },
-            geoInfoData: []
+            geoInfoData: [],
+            personInfo: {}
+        }
+    },
+    computed: {
+        ...mapState(['userId']),
+    },
+    watch: {
+        userId() {
+            this.getPersonInfo()
         }
     },
     methods: {
@@ -165,9 +175,17 @@ export default {
                 this.geoInfoData.push(point)
             }
         },
+        getPersonInfo() {
+            this.$axios.get(`/api/v1/display/user/detail?actorId=12749&userId=${this.userId}`).then(res => {
+                let data = res.data.data
+                console.log(data, 'data-----------')
+                this.personInfo = data
+            })
+        }
     },
     mounted() {
         this.drawMap();
+        this.getPersonInfo()
     }
 }
 </script>
@@ -190,7 +208,7 @@ export default {
     }
     .supervise_personal {
         position: absolute;
-        bottom: 0;
+        bottom: 25px;
         display: flex;
         width: 100%;
         height: 660px;

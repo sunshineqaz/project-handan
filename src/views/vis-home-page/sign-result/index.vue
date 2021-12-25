@@ -89,6 +89,7 @@ export default {
         },
         userId(id) {
             console.log(id, 'userIdddd')
+            this.getData()
         }
     },
     methods: {
