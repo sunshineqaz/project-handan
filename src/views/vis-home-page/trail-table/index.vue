@@ -7,7 +7,7 @@
             TRAJECTORY DESCRIPTION
         </div>
         <div class="trailTable_filters">
-            <el-table ref="trailTable" :data="tableData">
+            <el-table ref="trailTable" :data="tableData" @row-click="openDetails">
                 <el-table-column label="序号" type="index" width="200"></el-table-column>
                 <el-table-column label="定位方式"></el-table-column>
                 <el-table-column label="定位状态" prop="status">
@@ -19,7 +19,7 @@
                 <el-table-column label="轨迹描述"></el-table-column>
             </el-table>
         </div>
-        <div class="trailTable_detail_dialog">
+        <div class="trailTable_detail_dialog" v-show="isShow">
             <div class="portrait_container">
                 <div class="portrait"></div>
             </div>
@@ -111,6 +111,7 @@ import { mapState } from 'vuex';
 export default {
     data() {
         return {
+            isShow: false,
             tableData: [],
             statusDict: {
                 1: '成功',
@@ -143,6 +144,11 @@ export default {
                 this.tableData = data
             })
         },
+        // 点击下钻
+        openDetails(row) {
+            this.isShow = true
+            console.log(row, 'row')
+        }
     }
 }
 </script>
