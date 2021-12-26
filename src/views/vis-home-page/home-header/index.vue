@@ -125,7 +125,7 @@ export default {
         },
         // 获取司法局列表
         getJusticeData() {
-            this.$axios.get(`/api/v1/display/dept/info?actorId=${this.actorId}&deptId=2252`).then(res => {
+            this.$axios.get(`/api/v1/display/dept/info?actorId=${this.actorId}&deptId=3684`).then(res => {
                 this.justiceOpts = [res.data.data]
                 this.filterData.justice = res.data.data.deptId
                 this.changeOrgId(this.filterData.justice)
@@ -133,7 +133,7 @@ export default {
         },
         // 获取司法所列表
         getAreaData() {
-            this.$axios.get(`/api/v1/display/dept/list?actorId=${this.actorId}&deptId=2252`).then(res => {
+            this.$axios.get(`/api/v1/display/dept/list?actorId=${this.actorId}&deptId=3684`).then(res => {
                 this.areaOpts = res.data.data
             })
         },

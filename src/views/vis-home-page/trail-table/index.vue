@@ -7,11 +7,15 @@
             TRAJECTORY DESCRIPTION
         </div>
         <div class="trailTable_filters">
-            <el-table ref="trailTable">
-                <el-table-column label="序号"></el-table-column>
+            <el-table ref="trailTable" :data="tableData">
+                <el-table-column label="序号" type="index" width="200"></el-table-column>
                 <el-table-column label="定位方式"></el-table-column>
-                <el-table-column label="定位状态"></el-table-column>
-                <el-table-column label="定位时间"></el-table-column>
+                <el-table-column label="定位状态" prop="status">
+                    <template slot-scope="scoped">
+                        {{ statusDict[scoped.row.status] }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="定位时间" prop="createTime"></el-table-column>
                 <el-table-column label="轨迹描述"></el-table-column>
             </el-table>
         </div>
@@ -107,14 +111,29 @@ import { mapState } from 'vuex';
 export default {
     data() {
         return {
-            tableData: []
+            tableData: [],
+            statusDict: {
+                1: '成功',
+                2: '请假',
+                3: '关机',
+                4: '定位失败',
+                5: '脱区',
+                6: '无边界',
+                7: '未开户',
+                8: '无电话',
+                9: '未绑定'
+            }
         }
-    },
-    mounted() {
-        this.getData()
     },
     computed: {
         ...mapState(['actorId', 'userId'])
+    },
+    watch: {
+        userId(v) {
+            if (v) {
+                this.getData()
+            }
+        }
     },
     methods: {
         // 获取数据

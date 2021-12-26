@@ -10,12 +10,12 @@
             <ul class="signList_filters" id="signList_filters">
                 <li v-for="(item, index) in signList" :key="index">
                     <div class="filters_photo">
-                        <img src="" alt="">
+                        <img :src="item.imgUrl" alt="">
                     </div>
                     <div class="filters_contain">
-                        <div class="filters_contain_name">{{ item.name }} | {{ item.tel }}</div>
+                        <div class="filters_contain_name">{{ item.userName }} | {{ item.phone }}</div>
                         <div class="filters_contain_detail">
-                            机构：{{ item.part }} &nbsp;&nbsp; 签到时间：{{ item.time }}
+                            机构：{{ item.deptName }} &nbsp;&nbsp; 签到时间：{{ item.checkTime }}
                             <br>
                             签到地址： {{ item.addr }}
                         </div>
@@ -114,9 +114,11 @@ export default {
         // 获取数据
         getData() {
             let baseUrl = '/api/v1/display/check/'
-            let extendUrl = this.userId ? `user?actorId=${this.actorId}&userId=${this.userId}` : `dept?actorId=${this.actorId}&deptId=${this.orgId}`
+            let extendUrl = this.userId ? `user?actorId=${this.actorId}&userId=${this.userId}` : `dept?actorId=${this.actorId}&deptId=${this.orgId}&pageSize=9999&pageNum=1`
             this.$axios.get(baseUrl + extendUrl).then(res => {
-                let data = res.data.data
+                let data = res.data.data.list
+                this.signList = data
+                console.log(this.signList, 'signList')
             })
         },
     }
