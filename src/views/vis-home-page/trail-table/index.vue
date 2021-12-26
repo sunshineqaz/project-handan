@@ -219,7 +219,6 @@ export default {
                 width: 350px;
                 height: 350px;
                 margin-top: 25px;
-                border: 1px solid #f00;
             }
         }
         .left_content {
