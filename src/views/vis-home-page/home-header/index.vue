@@ -307,5 +307,9 @@ export default {
         line-height: 150px;
         padding: 0 30px;
     }
+    .el-select-dropdown__item:hover,
+    .selected {
+        background: #001D66;
+    }
 }
 </style>
