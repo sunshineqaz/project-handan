@@ -94,7 +94,6 @@ export default {
     mounted() {
         this.signDict = this.depthDict
         this.getData()
-        this.drawCharts()
     },
     methods: {
         handleFilter(params) {
@@ -110,6 +109,7 @@ export default {
                 this.signDict[1].count = data.waiting
                 this.signDict[2].count = data.failed
                 this.signDict[3].count = data.expired
+                this.drawCharts()
             })
         },
         // 右侧图表

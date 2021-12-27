@@ -27,7 +27,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['actorId', 'orgId']),
+        ...mapState(['actorId', 'orgId', 'userId']),
     },
     watch: {
         orgId() {

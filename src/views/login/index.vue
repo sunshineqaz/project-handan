@@ -13,7 +13,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-input placeholder="输入验证码" style="width: 50%; float: left;"></el-input>
-                    <div>{{ captchaData }}</div>
+                    <!-- <div>{{ captchaData }}</div> -->
                 </el-form-item>
                 <el-button type="primary" @click="goLogin()">登录</el-button>
             </el-form>

@@ -6,7 +6,9 @@
             <div class="supervise_personal_info">
                 <p class="supervise_personal_info_title">个人信息</p>
                 <div class="supervise_personal_info_content">
-                    <div class="portrait"></div>
+                    <div class="portrait">
+                        <img :src="personInfo.photo" alt="" style="width: 100%; height: 100%">
+                    </div>
                     <div class="content">
                         <div class="name_info">
                             <span class="name">{{ personInfo.userName }}</span>
@@ -39,6 +41,7 @@
                     </div>
                 </div>
             </div>
+            <tracing class="supervise_tracing"></tracing>
         </div>
     </div>
 </template>
@@ -46,7 +49,11 @@
 import * as echarts from 'echarts';
 import JSON from './china.json';
 import { mapState } from 'vuex';
+import tracing from '../tracing.vue'
 export default {
+    components: {
+        tracing
+    },
     data() {
         return {
             isShowPosition: false,
@@ -290,6 +297,15 @@ export default {
                     }
                 }
             }
+        }
+        .supervise_tracing {
+            width: 30%;
+            height: 660px;
+            float: right;
+            background: #0C1823;
+            border: 2px solid #2B69F8;
+            border-radius: 10px;
+            // overflow: hidden;
         }
     }
 }

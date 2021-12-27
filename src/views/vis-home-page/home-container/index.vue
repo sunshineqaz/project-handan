@@ -9,7 +9,7 @@
         </div>
         <div class="homeContainer_charts">
             <abnormal-table></abnormal-table>
-            <trail-table></trail-table>
+            <trail-table v-if="userId"></trail-table>
         </div>
     </div>
 </template>
@@ -20,6 +20,7 @@ import signResult from '../sign-result'
 import abnormalTable from '../abnormal-table'
 import trailTable from '../trail-table'
 import chinaMap from './china-map'
+import { mapState } from 'vuex';
 export default {
     components: {
         signResultTotal,
@@ -27,7 +28,10 @@ export default {
         abnormalTable,
         trailTable,
         chinaMap
-    }
+    },
+    computed: {
+        ...mapState(['userId']),
+    },
 }
 </script>
 

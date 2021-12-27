@@ -19,8 +19,8 @@
                             <br>
                             签到地址： {{ item.addr }}
                         </div>
-                        <div class="filters_contain_status" :class="'sign_' + item.status">
-                            {{ item.text }}
+                        <div class="filters_contain_status" :class="'sign_' + item.checkStatus">
+                            {{ checkoutDict[item.checkStatus] }}
                         </div>
                     </div>
                 </li>
@@ -35,44 +35,13 @@ import { mapState } from 'vuex';
 export default {
     data() {
         return {
-            signList: [
-                {
-                    name: '张三',
-                    tel: '15465897532',
-                    part: 'xxxxxsifasuo',
-                    time: '2125458965523',
-                    addr: '河北省',
-                    text: '签到成功',
-                    status: 'success'
-                },
-                {
-                    name: '张三111',
-                    tel: '15465897532',
-                    part: 'xxxxxsifasuo',
-                    time: '2125458965523',
-                    addr: '河北省',
-                    text: '等待签到',
-                    status: 'wait'
-                },
-                {
-                    name: '张三222',
-                    tel: '15465897532',
-                    part: 'xxxxxsifasuo',
-                    time: '2125458965523',
-                    addr: '河北省',
-                    text: '签到失败',
-                    status: 'failed'
-                },
-                {
-                    name: '张三33333',
-                    tel: '15465897532',
-                    part: 'xxxxxsifasuo',
-                    time: '2125458965523',
-                    addr: '河北省',
-                    text: '过期未签到',
-                    status: 'delay'
-                }
-            ],
+            signList: [],
+            checkoutDict: {
+                0: '签到失败',
+                1: '签到成功',
+                2: '等待签到',
+                3: '过期未签到'
+            },
             tempIndex: 1, // 默认选中签到成功
         }
     },
@@ -117,8 +86,20 @@ export default {
             let extendUrl = this.userId ? `user?actorId=${this.actorId}&userId=${this.userId}` : `dept?actorId=${this.actorId}&deptId=${this.orgId}&pageSize=9999&pageNum=1`
             this.$axios.get(baseUrl + extendUrl).then(res => {
                 let data = res.data.data.list
-                this.signList = data
-                console.log(this.signList, 'signList')
+                let geocoder = new AMap.Geocoder({});
+                data.forEach(v => {
+                    let latlan = JSON.parse(v.checkLbs).lng + ',' + JSON.parse(v.checkLbs).lat
+                    geocoder.getAddress(latlan, function (status, result) {
+                        if (status === "complete" && result.regeocode) {
+                            v.addr = result.regeocode.formattedAddress;
+                        } else {
+                            console.log("根据经纬度查询地址失败");
+                        }
+                    })
+                })
+                setTimeout(() => {
+                    this.signList = data
+                }, 3 * 1000)
             })
         },
     }
@@ -215,16 +196,16 @@ export default {
                     right: 68px;
                     transform: translateY(-50%);
                 }
-                .sign_success {
+                .sign_1 {
                     background-image: url('../../../assets/homePage/successStatus.png');
                 }
-                .sign_wait {
+                .sign_2 {
                     background-image: url('../../../assets/homePage/waitStatus.png');
                 }
-                .sign_failed {
+                .sign_9 {
                     background-image: url('../../../assets/homePage/failedStatus.png');
                 }
-                .sign_delay {
+                .sign_3 {
                     background-image: url('../../../assets/homePage/outStatus.png');
                 }
             }

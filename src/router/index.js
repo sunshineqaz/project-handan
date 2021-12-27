@@ -7,6 +7,8 @@ import homePage from '@/views/vis-home-page'
 Vue.use(Router)
 
 export default new Router({
+    base: '/ctrlcenter',
+    mode: 'history',
     routes: [{
             path: '/',
             name: 'login',
