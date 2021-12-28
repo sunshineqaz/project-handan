@@ -198,6 +198,7 @@ export default {
         },
         // 点击弹框下钻
         getDetailInfo(item) {
+            this.isShow = true
             this.user_id = item.userId
             this.getDetaiData()
             this.getBorderData()
