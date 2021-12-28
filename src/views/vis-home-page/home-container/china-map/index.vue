@@ -2,7 +2,7 @@
     <div class="china_map_container">
         <div id="chinaChart"></div>
         <div class="map_position" v-for="(item, index) in geoInfoData" :key="index" :style="{left: item[0] + 'px', top: item[1] + 'px'}" v-if="isShowPosition"></div>
-        <div class="supervise_personal" v-if="this.userId">
+        <div class="supervise_personal">
             <div class="supervise_personal_info">
                 <p class="supervise_personal_info_title">个人信息</p>
                 <div class="supervise_personal_info_content">
@@ -206,6 +206,7 @@ export default {
         display: flex;
         width: 100%;
         height: 660px;
+        display: none;
         &_info {
             width: 70%;
             height: 100%;

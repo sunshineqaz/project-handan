@@ -5,7 +5,7 @@
             <sign-result></sign-result>
         </div>
         <div class="homeContainer_map">
-            <statics-comp class="statics"></statics-comp>
+            <statics-comp class="statics" v-if="!userId"></statics-comp>
             <china-map></china-map>
         </div>
         <div class="homeContainer_charts">
