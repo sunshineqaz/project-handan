@@ -16,7 +16,7 @@ Vue.use(aMap)
 //初始化vue-amap
 aMap.initAMapApiLoader({
     key: '20b7259f91c4df3e50c069f6c67b0412',
-    plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder', 'AMap.Geolocation', 'AMap.Marker', 'AMap.MarkerClusterer', 'AMap.Walking', 'AMap.Driving']
+    plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor', 'AMap.Geocoder', 'AMap.Geolocation', 'AMap.Marker', 'AMap.MarkerClusterer']
 })
 
 import axios from 'axios';

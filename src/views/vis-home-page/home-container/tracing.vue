@@ -6,93 +6,77 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     data() {
-        return {}
+        return {
+            borderData: []
+        }
+    },
+    computed: {
+        ...mapState(['actorId', 'userId']),
+    },
+    watch: {
+        userId(v) {
+            if (v) {
+                this.getBorderData()
+            }
+        }
     },
     mounted() {
-        setTimeout(() => {
-            this.initMap()
-        }, 3 * 1000)
+        this.getBorderData()
     },
     methods: {
+        getBorderData() {
+            this.borderData = []
+            this.$axios.get(`/api/v1/display/user/border?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
+                let data = res.data.data
+                data.border.split(';').forEach(v => {
+                    let temp = v.split(',').reverse()
+                    this.borderData.push([Number(temp[0]), Number(temp[1])])
+                })
+                this.initMap()
+            })
+        },
            //初始化地图
         initMap() {
-            let self = this
             this.map = new AMap.Map("container", {
-                 mapStyle: "amap://styles/darkblue",
+                mapStyle: "amap://styles/darkblue",
                 center: [116.397559, 39.89621],
-                zoom: 14
+                zoom: 11
             });
-
-            // 当前示例的目标是展示如何根据规划结果绘制路线，因此walkOption为空对象
-            let walkingOption = {}
-
-            // 步行导航
-            let walking = new AMap.Walking(walkingOption)
-
-            //根据起终点坐标规划步行路线
-            walking.search([116.399028, 39.845042], [116.436281, 39.880719], function(status, result) {
-                // result即是对应的步行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_WalkingResult
-                if (status === 'complete') {
-                    if (result.routes && result.routes.length) {
-                        self.drawRoute(result.routes[0])
-                        console.log('绘制步行路线完成')
-                    }
-                } else {
-                    console.log('步行路线数据查询失败' + result)
-                } 
-            });
-        },
-
-        drawRoute(route) {
-            let path = this.parseRouteToPath(route)
-
-            let startMarker = new AMap.Marker({
-                position: path[0],
-                icon: 'https://webapi.amap.com/theme/v1.3/markers/n/start.png',
-                map: this.map,
-                anchor: 'bottom-center',
+            this.marker = new AMap.Marker({
+                position: null
             })
-
-            let endMarker = new AMap.Marker({
-                position: path[path.length - 1],
-                icon: 'https://webapi.amap.com/theme/v1.3/markers/n/end.png',
-                map: this.map,
-                anchor: 'bottom-center',
+            this.map.add(this.marker);
+            this.path = new AMap.Polyline({
+                path: null,
+                isOutline: false,     //线条是否带描边，默认false
+                outlineColor: '#ffeeff',//线条描边颜色，此项仅在isOutline为true时有效，默认：#000000
+                borderWeight: 1,    //描边的宽度，默认为1
+                strokeColor: "#3366FF", //线条颜色，使用16进制颜色代码赋值。默认值为#006600
+                strokeOpacity: 1,   //线条透明度，取值范围[0,1]，0表示完全透明，1表示不透明。默认为0.9
+                strokeWeight: 4,    //线条宽度，单位：像素
+                strokeStyle: "solid",  //线样式，实线:solid，虚线:dashed
+                strokeDasharray: [10, 5],//勾勒形状轮廓的虚线和间隙的样式，此属性在strokeStyle 为dashed 时有效
+                lineJoin: 'round',    //折线拐点的绘制样式，默认值为'miter'尖角，其他可选值：'round'圆角、'bevel'斜角
+                lineCap: 'round',   //折线两端线帽的绘制样式，默认值为'butt'无头，其他可选值：'round'圆头、'square'方头
+                zIndex: 50,       //折线覆盖物的叠加顺序。默认叠加顺序，先添加的线在底层，后添加的线在上层。通过该属性可调整叠加顺序，使级别较高的折线覆盖物在上层显示默认zIndex：50、
             })
-
-            let routeLine = new AMap.Polyline({
-                path: path,
-                isOutline: true,
-                outlineColor: '#ffeeee',
-                borderWeight: 2,
-                strokeWeight: 5,
-                strokeColor: '#0091ff',
-                strokeOpacity: 0.9,
-                lineJoin: 'round'
-            })
-
-            this.map.add(routeLine);
-
-            // 调整视野达到最佳显示区域
-            this.map.setFitView([ startMarker, endMarker, routeLine ])
-        },
-
-        // 解析WalkRoute对象，构造成AMap.Polyline的path参数需要的格式
-        // WalkRoute对象的结构文档 https://lbs.amap.com/api/javascript-api/reference/route-search#m_WalkRoute
-        parseRouteToPath(route) {
-            let path = []
-
-            for (let i = 0, l = route.steps.length; i < l; i++) {
-                let step = route.steps[i]
-
-                for (let j = 0, n = step.path.length; j < n; j++) {
-                path.push(step.path[j])
+            // 将折线添加至地图实例
+            this.map.add(this.path);
+            let borderPath = []
+            this.borderData.forEach(v => {
+                if (v[0] && v[1]) {
+                    borderPath.push(new AMap.LngLat(v[0], v[1]))
                 }
-            }
-
-            return path
+            })
+            this.path.setPath(borderPath)
+            this.path.show()
+            let lastTrack = new AMap.LngLat(this.borderData[0][0], this.borderData[0][1])
+            this.map.setCenter(lastTrack)
+            this.marker.setPosition(lastTrack)
+            this.marker.show()
         }
     }
 }
