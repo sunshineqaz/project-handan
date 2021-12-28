@@ -63,6 +63,9 @@ export default {
         td.el-table__cell {
             border-color: #2B69F8;;
         }
+        th.el-table__cell {
+            background: none;
+        }
     }
     .el-table__empty-text {
         height: 100px;

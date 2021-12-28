@@ -308,6 +308,7 @@ export default {
         padding: 0 30px;
     }
     .el-select-dropdown__item:hover,
+    .el-select-dropdown__item.hover,
     .selected {
         background: #001D66;
     }
