@@ -8,7 +8,7 @@
         </div>
         <div class="scroll_box" id="scroll_box">
             <ul class="signList_filters" id="signList_filters">
-                <li v-for="(item, index) in signList" :key="index">
+                <li v-for="(item, index) in signList" :key="index" @click="getDetailInfo(item)">
                     <div class="filters_photo">
                         <img :src="item.imgUrl" alt="">
                     </div>
@@ -27,6 +27,92 @@
             </ul>
             <ul class="signList_filters_copy" id="signList_filters_copy"></ul>
         </div>
+        <div class="signList_detail_dialog">
+            <div class="portrait_container">
+                <div class="portrait">
+                    <img :src="detailData.photo" alt="">
+                </div>
+            </div>
+            <div class="left_content">
+                <div class="left_content_top">
+                    <div class="left_content_top_container">
+                        <div class="name">{{ detailData.userName }}</div>
+                        <ul>
+                            <li>
+                                <span class="title">机构：</span>
+                                <span class="info">{{ detailData.deptName }}</span>
+                            </li>
+                            <li>
+                                <span class="title">证件号码：</span>
+                                <span class="info">130628199009098899</span>
+                            </li>
+                            <li>
+                                <span class="title">固定居住地：</span>
+                                <span class="info">{{ detailData.homeAddr }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="left_content_bottom">
+                    <div class="left_content_bottom_container">
+                        <div class="type_info">
+                            <span v-show="detailData.ccType" class="type">{{ detailData.ccType }}</span>
+                            <span v-show="detailData.ccLevel" class="gz">{{ detailData.ccLevel }}</span>
+                            <span v-show="detailData.crime" class="fz_type">{{ detailData.crime }}</span>
+                        </div>
+                        <ul>
+                            <li>
+                                <span>最后一次签到结果：</span>
+                                <span>签到成功</span>
+                            </li>
+                            <li>
+                                <span>最后一次签到地址：</span>
+                                <span>河北省邯郸市XX区河北省邯郸市XX区河北省邯郸市XX区</span>
+                            </li>
+                            <li>
+                                <span>矫正开始时间：</span>
+                                <span>{{ detailData.ccStartTime }}</span>
+                            </li>
+                            <li>
+                                <span>矫正结束时间：</span>
+                                <span>{{ detailData.ccEndTime }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="right_content">
+                <div class="right_content_container">
+                    <ul>
+                        <li>
+                            <span>请假状态：</span>
+                            <span>{{ detailData.isLeave == '1' ? '请假' : '未请假' }}</span>
+                        </li>
+                        <li>
+                            <span>请假目的地：</span>
+                            <span>{{ detailData.leaveDest }}</span>
+                        </li>
+                        <li>
+                            <span>定位电话：</span>
+                            <span>{{ detailData.phone }}</span>
+                        </li>
+                        <li>
+                            <span>定位间隔：</span>
+                            <span>{{ `${detailData.locationRate}分钟` }} </span>
+                        </li>
+                        <li>
+                            <span>最后一次定位时间：</span>
+                            <span>2021-11-20</span>
+                        </li>
+                        <li>
+                            <span>定位地址：</span>
+                            <span>2021-11-30</span>
+                        </li>
+                    </ul>
+                    <div class="track_path"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -35,6 +121,9 @@ import { mapState } from 'vuex';
 export default {
     data() {
         return {
+            isShow: false,
+            detailData: {},
+            user_id: '',
             signList: [],
             checkoutDict: {
                 0: '签到失败',
@@ -48,6 +137,7 @@ export default {
     mounted() {
         this.getData()
         this.scrollAnimation()
+        this.getDetaiData() // 联调之后删除掉
     },
     computed: {
         ...mapState(['actorId', 'orgId', 'userId']),
@@ -59,6 +149,7 @@ export default {
         userId(id) {
             if (id) {
                 this.getData()
+                this.getDetaiData() // 联调之后要删除掉
             }
         }
     },
@@ -102,6 +193,20 @@ export default {
                 }, 3 * 1000)
             })
         },
+        // 点击弹框下钻
+        getDetailInfo(item) {
+            this.user_id = item.userId
+            this.getDetaiData()
+        },
+        // 获取下钻数据
+        getDetaiData() {
+            // this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
+            //     this.detailData = res.data.data
+            // })
+            this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
+                this.detailData = res.data.data
+            })
+        }
     }
 }
 </script>
@@ -207,6 +312,164 @@ export default {
                 }
                 .sign_3 {
                     background-image: url('../../../assets/homePage/outStatus.png');
+                }
+            }
+        }
+    }
+    &_detail_dialog {
+        position: fixed;
+        z-index: 999;
+        width: 2672px;
+        height: auto;
+        top: 730px;
+        left: 50%;
+        margin-left: -1336px;
+        ul {
+            margin: 0;
+            padding: 0;
+            li {
+                line-height: 60px;
+            }
+        }
+        .portrait_container {
+            display: inline-block;
+            float: left;
+            width: 350px;
+            height: 400px;
+            background: rgba(36, 73, 159, 0.8);
+            border-top: 4px solid #2B69F8;
+            border-bottom: 4px solid #2B69F8;
+            .portrait {
+                width: 350px;
+                height: 350px;
+                margin-top: 25px;
+                img {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+        .left_content {
+            display: inline-block;
+            float: left;
+            width: 1000px;
+            height: 100%;
+            margin-left: 31px;
+            &_top {
+                width: 100%;
+                height: 400px;
+                font-size: 36px;
+                color: #fff;
+                text-align: left;
+                background: rgba(36, 73, 159, 0.8);
+                border-top: 4px solid #2B69F8;
+                border-bottom: 4px solid #2B69F8;
+                &_container {
+                    height: 350px;
+                    margin-top: 25px;
+                    padding-left: 37px;
+                    padding-right: 37px;
+                    background: #021F3F;
+                    .name {
+                        font-size: 50px;
+                        margin-bottom: 30px;
+                        padding-top: 20px;
+                    }
+                }
+            }
+            &_bottom {
+                width: 100%;
+                height: 560px;
+                font-size: 36px;
+                color: #fff;
+                text-align: left;
+                margin-top: 72px;
+                background: rgba(36, 73, 159, 0.8);
+                border-top: 4px solid #2B69F8;
+                border-bottom: 4px solid #2B69F8;
+                &_container {
+                    height: 500px;
+                    margin-top: 30px;
+                    padding-left: 37px;
+                    padding-right: 37px;
+                    background: #021F3F;
+                    .type_info {
+                        padding-top: 27px;
+                        margin-bottom: 62px;
+                        span {
+                            display: inline-block;
+                        }
+                        .type {
+                            width: auto;
+                            height: 80px;
+                            line-height: 80px;
+                            font-size: 36px;
+                            color: #FFFF59;
+                            text-align: center;
+                            margin-right: 26px;
+                            padding-left: 16px;
+                            padding-right: 16px;
+                            background: url(../../../assets/map/type_1.png) no-repeat;
+                            background-size: 100% 100%;
+                        }
+                        .gz {
+                            width: auto;
+                            height: 80px;
+                            line-height: 80px;
+                            font-size: 36px;
+                            color: #FF7E15;
+                            text-align: center;
+                            margin-right: 26px;
+                            padding-left: 16px;
+                            padding-right: 16px;
+                            background: url(../../../assets/map/type_2.png) no-repeat;
+                            background-size: 100% 100%;
+                        }
+                        .fz_type {
+                            width: auto;
+                            height: 80px;
+                            line-height: 80px;
+                            font-size: 36px;
+                            color: #2CFFC3;
+                            text-align: center;
+                            margin-right: 26px;
+                            padding-left: 16px;
+                            padding-right: 16px;
+                            background: url(../../../assets/map/type_3.png) no-repeat;
+                            background-size: 100% 100%;
+                        }
+                    }
+                }
+            }
+        }
+        .right_content {
+            display: inline-block;
+            float: left;
+            width: 1000px;
+            height: 1032px;
+            margin-left: 291px;
+            background: rgba(36, 73, 159, 0.8);
+            border-top: 4px solid #2B69F8;
+            border-bottom: 4px solid #2B69F8;
+            &_container {
+                height: 972px;
+                font-size: 36px;
+                color: #fff;
+                text-align: left;
+                margin-top: 30px;
+                padding-left: 37px;
+                padding-right: 37px;
+                background: #021F3F;
+                ul {
+                    padding-top: 32px;
+                }
+                .track_path {
+                    width: 100%;
+                    height: 480px;
+                    border: 2px solid #2B69F8;
+                    border-radius: 10px;
+                    margin-top: 12px;
                 }
             }
         }
