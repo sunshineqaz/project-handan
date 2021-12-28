@@ -5,6 +5,7 @@
             <sign-result></sign-result>
         </div>
         <div class="homeContainer_map">
+            <statics-comp class="statics"></statics-comp>
             <china-map></china-map>
         </div>
         <div class="homeContainer_charts">
@@ -20,6 +21,7 @@ import signResult from '../sign-result'
 import abnormalTable from '../abnormal-table'
 import trailTable from '../trail-table'
 import chinaMap from './china-map'
+import staticsComp from '../statics-comp'
 import { mapState } from 'vuex';
 export default {
     components: {
@@ -27,7 +29,8 @@ export default {
         signResult,
         abnormalTable,
         trailTable,
-        chinaMap
+        chinaMap,
+        staticsComp
     },
     computed: {
         ...mapState(['userId']),
@@ -48,6 +51,14 @@ export default {
     .homeContainer_map {
         width: 3520px;
         height: 100%;
+        position: relative;
+        .statics {
+            z-index: 6;
+            position: absolute;
+            width: 100%;
+            height: 300px;
+            top: 25px;
+        }
     }
 }
 </style>
