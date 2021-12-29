@@ -27,7 +27,7 @@
             </ul>
             <ul class="signList_filters_copy" id="signList_filters_copy"></ul>
         </div>
-        <div class="signList_detail_dialog">
+        <div class="signList_detail_dialog" v-if="isShow">
             <div class="portrait_container">
                 <div class="portrait">
                     <img :src="detailData.photo" alt="">
@@ -44,7 +44,7 @@
                             </li>
                             <li>
                                 <span class="title">证件号码：</span>
-                                <span class="info">130628199009098899</span>
+                                <span class="info">{{ detailData.idCardNo }}</span>
                             </li>
                             <li>
                                 <span class="title">固定居住地：</span>
@@ -63,11 +63,11 @@
                         <ul>
                             <li>
                                 <span>最后一次签到结果：</span>
-                                <span>签到成功</span>
+                                <span>{{ checkoutDict[personData.checkStatus] }}</span>
                             </li>
                             <li>
                                 <span>最后一次签到地址：</span>
-                                <span>河北省邯郸市XX区河北省邯郸市XX区河北省邯郸市XX区</span>
+                                <span>{{ personData.addr }}</span>
                             </li>
                             <li>
                                 <span>矫正开始时间：</span>
@@ -102,11 +102,11 @@
                         </li>
                         <li>
                             <span>最后一次定位时间：</span>
-                            <span>2021-11-20</span>
+                            <span>{{ personData.checkTime }}</span>
                         </li>
                         <li>
                             <span>定位地址：</span>
-                            <span>2021-11-30</span>
+                            <span>{{ detailData.signAddr }}</span>
                         </li>
                     </ul>
                     <div class="track_path" id="track_path"></div>
@@ -133,6 +133,7 @@ export default {
                 3: '过期未签到'
             },
             tempIndex: 1, // 默认选中签到成功
+            personData: {}
         }
     },
     mounted() {
@@ -142,10 +143,11 @@ export default {
         this.getBorderData()
     },
     computed: {
-        ...mapState(['actorId', 'orgId', 'userId']),
+        ...mapState(['actorId', 'orgId']),
     },
     watch: {
         orgId() {
+            this.isShow = false
             this.getData()
         },
         userId(id) {
@@ -200,21 +202,32 @@ export default {
         getDetailInfo(item) {
             this.isShow = true
             this.user_id = item.userId
+            this.personData = item
             this.getDetaiData()
             this.getBorderData()
         },
         // 获取下钻数据
         getDetaiData() {
-            // this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
-            //     this.detailData = res.data.data
-            // })
-            this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
+            this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
                 this.detailData = res.data.data
+            })
+            this.$axios.get(`/api/v1/display/location/user?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
+                this.detailData = Object.assign(this.detailData, res.data.data)
+                let latlan = this.detailData.lng + ',' + this.detailData.lat
+                let _this = this
+                let geocoder = new AMap.Geocoder({});
+                geocoder.getAddress(latlan, function (status, result) {
+                    if (status === "complete" && result.regeocode) {
+                        _this.detailData.signAddr = result.regeocode.formattedAddress;
+                    } else {
+                        console.log("根据经纬度查询地址失败");
+                    }
+                })
             })
         },
         getBorderData() {
             this.borderData = []
-            this.$axios.get(`/api/v1/display/user/border?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
+            this.$axios.get(`/api/v1/display/user/border?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
                 let data = res.data.data
                 data.border.split(';').forEach(v => {
                     let temp = v.split(',').reverse()
