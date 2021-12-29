@@ -140,8 +140,6 @@ export default {
     mounted() {
         this.getData()
         this.scrollAnimation()
-        this.getDetaiData() // 联调之后删除掉
-        this.getBorderData()
     },
     computed: {
         ...mapState(['actorId', 'orgId']),
