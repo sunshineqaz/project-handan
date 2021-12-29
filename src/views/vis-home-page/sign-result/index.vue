@@ -56,8 +56,8 @@
                 <div class="left_content_bottom">
                     <div class="left_content_bottom_container">
                         <div class="type_info">
-                            <span v-show="detailData.ccType" class="type">{{ detailData.ccType }}</span>
-                            <span v-show="detailData.ccLevel" class="gz">{{ detailData.ccLevel }}</span>
+                            <span v-show="detailData.ccType" class="type">{{ getType(detailData.ccType) }}</span>
+                            <!-- <span v-show="detailData.ccLevel" class="gz">{{ detailData.ccLevel }}</span> -->
                             <span v-show="detailData.crime" class="fz_type">{{ detailData.crime }}</span>
                         </div>
                         <ul>
@@ -274,6 +274,18 @@ export default {
             this.map.setCenter(lastTrack)
             this.marker.setPosition(lastTrack)
             this.marker.show()
+        },
+        // 矫正类别
+        getType(v) {
+            if (v == 1) {
+                return '管制'
+            } else if (v == 2) {
+                return '缓刑'
+            } else if (v == 3) {
+                return '假释'
+            } else if (v == 4) {
+                return '暂予监外执行'
+            }
         }
     }
 }
