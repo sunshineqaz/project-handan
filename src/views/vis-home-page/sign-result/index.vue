@@ -134,7 +134,8 @@ export default {
             },
             tempIndex: 1, // 默认选中签到成功
             personData: {},
-            signAddr: ''
+            signAddr: '',
+            tracingData: []
         }
     },
     mounted() {
@@ -225,7 +226,14 @@ export default {
             })
         },
         getBorderData() {
+            this.tracingData = []
             this.borderData = []
+            this.$axios.get(`/api/v1/display/location/path?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
+                let data = res.data.data
+                data.forEach(v => {
+                    this.tracingData.push([v.lng, v.lat])
+                })
+            })
             this.$axios.get(`/api/v1/display/user/border?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
                 let data = res.data.data
                 data.border.split(';').forEach(v => {
@@ -240,8 +248,27 @@ export default {
             this.map = new AMap.Map("track_path", {
                 mapStyle: "amap://styles/darkblue",
                 center: [116.397559, 39.89621],
-                zoom: 11
+                zoom: 14
             });
+            // 绘制边界
+            let borderData = []
+            this.borderData.forEach(v => {
+                if (v[0] && v[1]) {
+                    borderData.push(v)
+                }
+            })
+            this.polyline = new AMap.Polyline({
+                path: borderData,
+                strokeColor: '#2CFFC3',
+                strokeOpacity: 1,
+                strokeWeight: 4,
+                strokeStyle: 'solid',
+                strokeDasharray: [10,5],
+                geodesic: true
+
+            });
+            this.polyline.setMap(this.map);
+
             this.marker = new AMap.Marker({
                 position: null
             })
@@ -253,7 +280,7 @@ export default {
                 borderWeight: 1,    //描边的宽度，默认为1
                 strokeColor: "#3366FF", //线条颜色，使用16进制颜色代码赋值。默认值为#006600
                 strokeOpacity: 1,   //线条透明度，取值范围[0,1]，0表示完全透明，1表示不透明。默认为0.9
-                strokeWeight: 4,    //线条宽度，单位：像素
+                strokeWeight: 6,    //线条宽度，单位：像素
                 strokeStyle: "solid",  //线样式，实线:solid，虚线:dashed
                 strokeDasharray: [10, 5],//勾勒形状轮廓的虚线和间隙的样式，此属性在strokeStyle 为dashed 时有效
                 lineJoin: 'round',    //折线拐点的绘制样式，默认值为'miter'尖角，其他可选值：'round'圆角、'bevel'斜角
@@ -262,18 +289,19 @@ export default {
             })
             // 将折线添加至地图实例
             this.map.add(this.path);
-            let borderPath = []
-            this.borderData.forEach(v => {
+            let tracingPath = []
+            this.tracingData.forEach(v => {
                 if (v[0] && v[1]) {
-                    borderPath.push(new AMap.LngLat(v[0], v[1]))
+                    tracingPath.push(new AMap.LngLat(v[0], v[1]))
                 }
             })
-            this.path.setPath(borderPath)
+            this.path.setPath(tracingPath)
             this.path.show()
-            let lastTrack = new AMap.LngLat(this.borderData[0][0], this.borderData[0][1])
+            let lastTrack = new AMap.LngLat(this.tracingData[0][0], this.tracingData[0][1])
             this.map.setCenter(lastTrack)
             this.marker.setPosition(lastTrack)
             this.marker.show()
+            this.map.setFitView()
         }
     }
 }

@@ -295,7 +295,7 @@ export default {
 }
 .el-select-dropdown {
     height: 767px;
-    background: #000000;
+    background: #000000 !important;
     border: 4px solid #024F7E;
     .el-select-dropdown__wrap {
         max-height: 767px !important;
