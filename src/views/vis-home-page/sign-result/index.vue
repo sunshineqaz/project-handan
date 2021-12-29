@@ -106,7 +106,7 @@
                         </li>
                         <li>
                             <span>定位地址：</span>
-                            <span>{{ detailData.signAddr }}</span>
+                            <span>{{ signAddr }}</span>
                         </li>
                     </ul>
                     <div class="track_path" id="track_path"></div>
@@ -133,7 +133,8 @@ export default {
                 3: '过期未签到'
             },
             tempIndex: 1, // 默认选中签到成功
-            personData: {}
+            personData: {},
+            signAddr: ''
         }
     },
     mounted() {
@@ -152,9 +153,8 @@ export default {
         },
         userId(id) {
             if (id) {
+                this.isShow = false
                 this.getData()
-                this.getDetaiData() // 联调之后要删除掉
-                this.getBorderData()
             }
         }
     },
@@ -218,11 +218,12 @@ export default {
                 let geocoder = new AMap.Geocoder({});
                 geocoder.getAddress(latlan, function (status, result) {
                     if (status === "complete" && result.regeocode) {
-                        _this.detailData.signAddr = result.regeocode.formattedAddress;
+                        _this.signAddr = result.regeocode.formattedAddress;
                     } else {
                         console.log("根据经纬度查询地址失败");
                     }
                 })
+                this.$forceUpdate()
             })
         },
         getBorderData() {
