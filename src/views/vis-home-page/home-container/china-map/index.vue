@@ -1,6 +1,6 @@
 <template>
     <div class="china_map_container">
-        <div id="chinaChart"></div>
+        <div id="mapContainer" class="mapContainer" ref="mapContainer"></div>
         <div class="map_position" v-for="(item, index) in geoInfoData" :key="index" :style="{left: item[0] + 'px', top: item[1] + 'px'}" v-if="isShowPosition"></div>
         <div class="supervise_personal">
             <div class="supervise_personal_info">
@@ -46,8 +46,6 @@
     </div>
 </template>
 <script>
-import * as echarts from 'echarts';
-import JSON from './china.json';
 import { mapState } from 'vuex';
 import tracing from '../tracing.vue'
 export default {
@@ -56,10 +54,14 @@ export default {
     },
     data() {
         return {
+            map: null,
             isShowPosition: false,
             locationData: [],
             geoInfoData: [],
-            personInfo: {}
+            personInfo: {},
+            zoom: 10,
+            zoomArray: [24, 18, 12, 6],
+            borderData: [] // 边界数据
         }
     },
     computed: {
@@ -72,107 +74,90 @@ export default {
         userId(v) {
             if (v) {
                 this.getPersonInfo()
+                this.getBorderData()
             }
         }
     },
     mounted() {
-        this.getLocationData()
+        this.$nextTick(() => {
+            this.initMap()
+            this.getLocationData() // 地图打点
+        })
     },
     methods: {
-        drawMap() {
-            let myChart = echarts.init(document.getElementById('chinaChart'));
-            echarts.registerMap('china', JSON, {})//引入地图文件
-            let convertData = (data) => {
-                var res = [];
-                for (var i = 0; i < data.length; i++) {
-                    res.push({
-                        value: [data[i].lng, data[i].lat]
-                    });
-                }
-                return res;
-            };
-            let option = {
-                title: {
-                    show: false
-                },
-                tooltip: {},
-                geo: {
-                    map: 'china',
-                    show: true,
-                    roam: false,
-                    label: {
-                        emphasis: {
-                            show: false
-                        }
-                    },
-                    itemStyle: {
-                        normal: {
-                            areaColor: '#052A4A',
-                            borderColor: '#1773c3',
-                            shadowColor: '#1773c3',
-                            shadowBlur: 20
-                        }
-                    }
-                },
-                series: [
-                    {
-                        type: 'map',
-                        map: 'china',
-                        geoIndex: 1,
-                        aspectScale: 0.75, //长宽比
-                        showLegendSymbol: true, // 存在legend时显示
-                        label: {
-                            normal: {
-                                show: false,
-                            },
-                            emphasis: {
-                                show: false,
-                                textStyle: {
-                                    color: '#fff'
-                                }
-                            }
-                        },
-                        roam: false,
-                        itemStyle: {
-                            normal: {
-                                areaColor: '#052A4A',
-                                borderColor: '#0FA4FF',
-                                borderWidth: 1
-                            },
-                            emphasis: {
-                                areaColor: '#0f2c70'
-                            }
-                        },
-                        data:[]
-                    },
-                    {
-                        type: 'effectScatter',
-                        coordinateSystem: 'geo',
-                        symbol: 'image://' + require('../../../../assets/map/point.png'),
-                        symbolSize: [32, 41],
-                        symbolOffset: [0, -20],
-                        z: 9999,
-                        data: convertData(this.locationData),
-                    }
-                ]
-            };
-            myChart.setOption(option);
-
-            // 获取系列
-            let seriesModel = myChart.getModel().getSeriesByIndex(option.series.length - 1)
-            // 获取地理坐标系实例
-            let coordSys = seriesModel.coordinateSystem;
-            // dataToPoint 相当于 getPosByGeo
-            this.locationData.forEach(v => {
-                let point = coordSys.dataToPoint([v.lng, v.lat]);
-                this.geoInfoData.push(point)
-            })
+        initMap() {
+            this.map = new AMap.Map('mapContainer', {
+                mapStyle: "amap://styles/darkblue",
+                center: [115.97, 39.48],
+                zoom: this.zoom
+            });
         },
         getLocationData() {
+            this.locationData = []
             this.$axios.get(`/api/v1/display/location/list?actorId=${this.actorId}&deptId=${this.orgId}`).then(res => {
-                this.locationData = res.data.data
-                this.drawMap();
+                res.data.data.forEach(v => {
+                    if (v.lng !== 0 && v.lat !== 0) {
+                        let marker = new AMap.Marker({
+                            icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png',
+                            size: [35, 60],
+                            position: [v.lng, v.lat.toFixed(14)],
+                            map: this.map
+                        })
+                    }
+                })
+                // this.map.setFitView()
             })
+        },
+        getBorderData() {
+            this.borderData = []
+            this.$axios.get(`/api/v1/display/user/border?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
+                let data = res.data.data
+                data.border.split(';').forEach(v => {
+                    let temp = v.split(',').reverse()
+                    this.borderData.push([Number(temp[0]), Number(temp[1])])
+                })
+                this.drawBorder()
+            })
+        },
+        //初始化地图
+        drawBorder() {
+            // 绘制边界
+            let borderData = []
+            this.borderData.forEach(v => {
+                if (v[0] && v[1]) {
+                    borderData.push(v)
+                }
+            })
+            this.polyline = new AMap.Polyline({
+                path: borderData,
+                strokeColor: '#2CFFC3',
+                fillColor: "#1791fc", //填充色
+                fillOpacity: 0.35,//填充透明度
+                strokeOpacity: 1,
+                strokeWeight: 4,
+                strokeStyle: 'solid',
+                // strokeDasharray: [10,5],
+                // geodesic: true
+
+            });
+            this.polyline.setMap(this.map);
+
+            this.path = new AMap.Polyline({
+                path: null,
+                isOutline: false,     //线条是否带描边，默认false
+                outlineColor: '#ffeeff',//线条描边颜色，此项仅在isOutline为true时有效，默认：#000000
+                borderWeight: 1,    //描边的宽度，默认为1
+                strokeColor: "#3366FF", //线条颜色，使用16进制颜色代码赋值。默认值为#006600
+                strokeOpacity: 1,   //线条透明度，取值范围[0,1]，0表示完全透明，1表示不透明。默认为0.9
+                strokeWeight: 6,    //线条宽度，单位：像素
+                strokeStyle: "solid",  //线样式，实线:solid，虚线:dashed
+                strokeDasharray: [10, 5],//勾勒形状轮廓的虚线和间隙的样式，此属性在strokeStyle 为dashed 时有效
+                lineJoin: 'round',    //折线拐点的绘制样式，默认值为'miter'尖角，其他可选值：'round'圆角、'bevel'斜角
+                lineCap: 'round',   //折线两端线帽的绘制样式，默认值为'butt'无头，其他可选值：'round'圆头、'square'方头
+                zIndex: 50,       //折线覆盖物的叠加顺序。默认叠加顺序，先添加的线在底层，后添加的线在上层。通过该属性可调整叠加顺序，使级别较高的折线覆盖物在上层显示默认zIndex：50、
+            })
+            // 将折线添加至地图实例
+            this.map.add(this.path);
         },
         getPersonInfo() {
             this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
@@ -189,7 +174,7 @@ export default {
     width: 100%;
     height: 100%;
     position: relative;
-    #chinaChart {
+    #mapContainer {
         width: 100%;
         height: 100%;
     }

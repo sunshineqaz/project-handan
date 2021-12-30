@@ -124,7 +124,6 @@ export default {
             isShow: false,
             detailData: {},
             user_id: '',
-            borderData: [],
             signList: [],
             checkoutDict: {
                 0: '签到失败',
@@ -227,18 +226,10 @@ export default {
         },
         getBorderData() {
             this.tracingData = []
-            this.borderData = []
             this.$axios.get(`/api/v1/display/location/path?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
                 let data = res.data.data
                 data.forEach(v => {
                     this.tracingData.push([v.lng, v.lat])
-                })
-            })
-            this.$axios.get(`/api/v1/display/user/border?actorId=${this.actorId}&userId=${this.user_id}`).then(res => {
-                let data = res.data.data
-                data.border.split(';').forEach(v => {
-                    let temp = v.split(',').reverse()
-                    this.borderData.push([Number(temp[0]), Number(temp[1])])
                 })
                 this.initMap()
             })
@@ -250,24 +241,6 @@ export default {
                 center: [116.397559, 39.89621],
                 zoom: 14
             });
-            // 绘制边界
-            let borderData = []
-            this.borderData.forEach(v => {
-                if (v[0] && v[1]) {
-                    borderData.push(v)
-                }
-            })
-            this.polyline = new AMap.Polyline({
-                path: borderData,
-                strokeColor: '#2CFFC3',
-                strokeOpacity: 1,
-                strokeWeight: 4,
-                strokeStyle: 'solid',
-                strokeDasharray: [10,5],
-                geodesic: true
-
-            });
-            this.polyline.setMap(this.map);
 
             this.marker = new AMap.Marker({
                 position: null

@@ -20,12 +20,12 @@
                 </el-select>
             </div>
             <div class="homeHeader-right_select">
-                <el-select v-model="filterData.area" placeholder="请选择司法所" @change="getPeopleData">
+                <el-select v-model="filterData.area" placeholder="请选择司法所" @change="getPeopleData" clearable>
                     <el-option v-for="(item, index) in areaOpts" :key="index" :value="item.deptId" :label="item.deptName"></el-option>
                 </el-select>
             </div>
             <div class="homeHeader-right_select">
-                <el-select v-model="filterData.name" placeholder="请选择人员姓名" @change="changeUserData">
+                <el-select v-model="filterData.name" placeholder="请选择人员姓名" @change="changeUserData" clearable>
                     <el-option v-for="(item, index) in peopleOpts" :key="index" :value="item.userId" :label="item.userName"></el-option>
                 </el-select>
             </div>
@@ -139,6 +139,10 @@ export default {
         },
         // 获取人员列表
         getPeopleData(val) {
+            if (val == '') {
+                this.changeOrgId(this.filterData.justice)
+                return
+            }
             this.changeOrgId(val)
             this.changeUserId('')
             this.filterData.name = ''
