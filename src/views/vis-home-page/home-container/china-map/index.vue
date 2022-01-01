@@ -59,7 +59,7 @@ export default {
             locationData: [],
             geoInfoData: [],
             personInfo: {},
-            zoom: 10,
+            zoom: 6,
             zoomArray: [24, 18, 12, 6],
             borderData: [] // 边界数据
         }
@@ -69,10 +69,13 @@ export default {
     },
     watch: {
         orgId(v) {
+            this.map.clearMap()
             this.getLocationData()
         },
         userId(v) {
             if (v) {
+                this.map.clearMap()
+                this.getUserPosition()
                 this.getPersonInfo()
                 this.getBorderData()
             }
@@ -158,6 +161,18 @@ export default {
             })
             // 将折线添加至地图实例
             this.map.add(this.path);
+        },
+        getUserPosition() {
+            this.$axios.get(`/api/v1/display/location/user?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
+                let data = res.data.data
+                let marker = new AMap.Marker({
+                    icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png',
+                    size: [35, 60],
+                    position: [data.lng, data.lat.toFixed(14)],
+                    map: this.map
+                })
+            })
+            
         },
         getPersonInfo() {
             this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
