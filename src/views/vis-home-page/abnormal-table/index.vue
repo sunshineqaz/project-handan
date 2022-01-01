@@ -27,10 +27,13 @@ export default {
         }
     },
     computed: {
-        ...mapState(['actorId', 'orgId', 'userId']),
+        ...mapState(['actorId', 'orgId', 'userId', 'isUpdateTime']),
     },
     watch: {
         orgId() {
+            this.getData()
+        },
+        isUpdateTime() {
             this.getData()
         }
     },

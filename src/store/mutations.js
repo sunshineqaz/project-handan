@@ -7,3 +7,8 @@ export const changeOrgId = (state, orgId) => {
 export const changeUserId = (state, userId) => {
     state.userId = userId
 }
+
+// 刷新倒计时
+export const changeTime = (state, isUpdateTime) => {
+    state.isUpdateTime = isUpdateTime
+}

@@ -97,12 +97,14 @@ export default {
         this.getTimeOver()
         this.overTime = setInterval(() => {
             this.getTimeOver()
+            this.isUpdateTime = !this.isUpdateTime
+            this.changeTime(this.isUpdateTime)
         }, 5 * 60 * 1000)
         this.getJusticeData()
         this.getAreaData()
     },
     methods: {
-        ...mapActions(['changeOrgId', 'changeUserId']),
+        ...mapActions(['changeOrgId', 'changeUserId', 'changeTime']),
         // 当前时间
         getTimeData() {
             let tempTime = dayjs(new Date()).valueOf()

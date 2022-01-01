@@ -7,3 +7,8 @@ export const changeOrgId = ({ commit }, payload) => {
 export const changeUserId = ({ commit }, payload) => {
     commit('changeUserId', payload)
 }
+
+// 刷新倒计时
+export const changeTime = ({ commit }, payload) => {
+    commit('changeTime', payload)
+}
