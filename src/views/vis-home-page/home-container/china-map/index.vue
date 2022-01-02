@@ -2,7 +2,7 @@
     <div class="china_map_container">
         <div id="mapContainer" class="mapContainer" ref="mapContainer"></div>
         <div class="map_position" v-for="(item, index) in geoInfoData" :key="index" :style="{left: item[0] + 'px', top: item[1] + 'px'}" v-if="isShowPosition"></div>
-        <div class="supervise_personal">
+        <div class="supervise_personal" v-if="userId && userId!=''">
             <div class="supervise_personal_info">
                 <p class="supervise_personal_info_title">个人信息</p>
                 <div class="supervise_personal_info_content">
@@ -13,7 +13,7 @@
                         <div class="name_info">
                             <span class="name">{{ personInfo.userName }}</span>
                             <span class="type">矫正类别</span>
-                            <span class="gz">管制</span>
+                            <span class="gz">{{ ccTypeDict[personInfo.ccType] }}</span>
                         </div>
                         <ul class="info_list">
                             <li>
@@ -59,9 +59,16 @@ export default {
             locationData: [],
             geoInfoData: [],
             personInfo: {},
-            zoom: 6,
+            zoomIndex: 3,
             zoomArray: [24, 18, 12, 6],
-            borderData: [] // 边界数据
+            borderData: [], // 边界数据
+            ccTypeDict: {
+                1: '管制',
+                2: '缓刑',
+                3: '假释',
+                4: '暂予监外执行'
+            },
+            timer: null
         }
     },
     computed: {
@@ -69,30 +76,50 @@ export default {
     },
     watch: {
         orgId(v) {
+            this.timer = null
+            clearInterval(this.timer)
             this.map.clearMap()
+            this.zoomIndex = 2
             this.getLocationData()
+            this.getMapAct()
         },
         userId(v) {
             if (v) {
+                this.timer = null
+                clearInterval(this.timer)
+                this.zoomIndex = 1
                 this.map.clearMap()
                 this.getUserPosition()
                 this.getPersonInfo()
                 this.getBorderData()
+                this.getMapAct()
             }
         }
     },
     mounted() {
         this.$nextTick(() => {
+            this.getMapAct()
             this.initMap()
             this.getLocationData() // 地图打点
         })
     },
     methods: {
+        getMapAct() {
+            this.timer = setInterval(() => {
+                this.zoomIndex++
+                this.zoom = this.zoomArray[this.zoomIndex]
+                this.initMap()
+                this.getLocationData() // 地图打点
+                if ( this.zoomIndex > 3) {
+                    return this.zoomIndex = 0
+                }
+            }, 30 * 1000)
+        },
         initMap() {
             this.map = new AMap.Map('mapContainer', {
                 mapStyle: "amap://styles/darkblue",
                 center: [115.97, 39.48],
-                zoom: this.zoom
+                zoom: this.zoomArray[this.zoomIndex]
             });
         },
         getLocationData() {
@@ -180,6 +207,10 @@ export default {
                 this.personInfo = data
             })
         }
+    },
+    beforeDestroy() {
+        this.timer = null
+        clearInterval(this.timer)
     }
 }
 </script>
@@ -206,7 +237,6 @@ export default {
         display: flex;
         width: 100%;
         height: 660px;
-        display: none;
         &_info {
             width: 70%;
             height: 100%;

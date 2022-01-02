@@ -28,12 +28,11 @@ export default {
     },
     methods: {
         getBorderData() {
-            this.borderData = []
-            this.$axios.get(`/api/v1/display/user/border?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
+            this.tracingData = []
+            this.$axios.get(`/api/v1/display/location/path?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
                 let data = res.data.data
-                data.border.split(';').forEach(v => {
-                    let temp = v.split(',').reverse()
-                    this.borderData.push([Number(temp[0]), Number(temp[1])])
+                data.forEach(v => {
+                    this.tracingData.push([v.lng, v.lat])
                 })
                 this.initMap()
             })
@@ -65,18 +64,19 @@ export default {
             })
             // 将折线添加至地图实例
             this.map.add(this.path);
-            let borderPath = []
-            this.borderData.forEach(v => {
+            let tracingPath = []
+            this.tracingData.forEach(v => {
                 if (v[0] && v[1]) {
-                    borderPath.push(new AMap.LngLat(v[0], v[1]))
+                    tracingPath.push(new AMap.LngLat(v[0], v[1]))
                 }
             })
-            this.path.setPath(borderPath)
+            this.path.setPath(tracingPath)
             this.path.show()
-            let lastTrack = new AMap.LngLat(this.borderData[0][0], this.borderData[0][1])
+            let lastTrack = new AMap.LngLat(this.tracingData[0][0], this.tracingData[0][1])
             this.map.setCenter(lastTrack)
             this.marker.setPosition(lastTrack)
             this.marker.show()
+            this.map.setFitView()
         }
     }
 }
