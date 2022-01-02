@@ -89,11 +89,17 @@ export default {
                 clearInterval(this.timer)
                 this.zoomIndex = 1
                 this.map.clearMap()
+                this.getMapAct()
                 this.getUserPosition()
                 this.getPersonInfo()
                 this.getBorderData()
-                this.getMapAct()
             }
+        },
+        isUpdateTime() {
+            this.timer = null
+            clearInterval(this.timer)
+            this.map.clearMap()
+            this.getMapAct()
         }
     },
     mounted() {
@@ -110,6 +116,11 @@ export default {
                 this.zoom = this.zoomArray[this.zoomIndex]
                 this.initMap()
                 this.getLocationData() // 地图打点
+                if(this.userId && this.userId!='') {
+                    this.getUserPosition()
+                    this.getPersonInfo()
+                    this.getBorderData()
+                }
                 if ( this.zoomIndex > 3) {
                     return this.zoomIndex = 0
                 }

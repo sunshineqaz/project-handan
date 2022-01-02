@@ -142,7 +142,7 @@ export default {
         this.scrollAnimation()
     },
     computed: {
-        ...mapState(['actorId', 'orgId']),
+        ...mapState(['actorId', 'orgId', 'isUpdateTime']),
     },
     watch: {
         orgId() {
@@ -154,6 +154,9 @@ export default {
                 this.isShow = false
                 this.getData()
             }
+        },
+        isUpdateTime() {
+            this.getData()
         }
     },
     methods: {

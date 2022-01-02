@@ -42,13 +42,16 @@ export default {
         }
     },
     computed: {
-        ...mapState(['actorId', 'userId'])
+        ...mapState(['actorId', 'userId', 'isUpdateTime'])
     },
     watch: {
         userId(v) {
             if (v) {
                 this.getData()
             }
+        },
+        isUpdateTime() {
+            this.getData()
         }
     },
     methods: {

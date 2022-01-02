@@ -77,7 +77,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['actorId', 'orgId', 'userId']),
+        ...mapState(['actorId', 'orgId', 'userId', 'isUpdateTime']),
     },
     watch: {
         orgId() {
@@ -89,6 +89,9 @@ export default {
                 this.signDict = this.personDict
                 this.getData()
             }
+        },
+        isUpdateTime() {
+            this.getData()
         }
     },
     mounted() {
