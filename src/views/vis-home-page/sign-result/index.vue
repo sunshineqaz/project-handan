@@ -134,25 +134,28 @@ export default {
             tempIndex: 1, // 默认选中签到成功
             personData: {},
             signAddr: '',
-            tracingData: []
+            tracingData: [],
+            timer: null
         }
-    },
-    mounted() {
-        this.getData()
-        this.scrollAnimation()
     },
     computed: {
         ...mapState(['actorId', 'orgId', 'isUpdateTime']),
     },
     watch: {
-        orgId() {
-            this.isShow = false
-            this.getData()
+        orgId(v) {
+            if (v) {
+                this.isShow = false
+                this.timer = null
+                clearInterval(this.timer)
+                this.getData()
+                this.scrollAnimation()
+            }
         },
         userId(id) {
             if (id) {
                 this.isShow = false
                 this.getData()
+                this.scrollAnimation()
             }
         },
         isUpdateTime() {
@@ -162,6 +165,8 @@ export default {
     methods: {
         // 滚动
         scrollAnimation() {
+            this.timer = null
+            clearInterval(this.timer)
             let ul1 = document.getElementById("signList_filters");
             let ul2 = document.getElementById("signList_filters_copy");
             let ulbox = document.getElementById("scroll_box");
@@ -175,7 +180,7 @@ export default {
                     ulbox.scrollTop = ulbox.scrollTop + 1;
                 } 
             }
-            setInterval(Marquee, 40)
+            this.timer = setInterval(Marquee, 40)
         },
         // 获取数据
         getData() {
@@ -291,6 +296,10 @@ export default {
                 return '暂予监外执行'
             }
         }
+    },
+    beforeDestroy() {
+        this.timer = null
+        clearInterval(this.timer)
     }
 }
 </script>

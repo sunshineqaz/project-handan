@@ -10,7 +10,7 @@
         </div>
         <div class="homeContainer_charts">
             <abnormal-table></abnormal-table>
-            <trail-table v-if="userId"></trail-table>
+            <trail-table></trail-table>
         </div>
     </div>
 </template>

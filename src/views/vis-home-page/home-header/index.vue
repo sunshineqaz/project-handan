@@ -11,7 +11,7 @@
             </el-row>
         </div>
         <span class="homeHeader_title">
-            邯郸区司法局指挥中心
+            邯郸市邯山区司法局指挥中心
         </span>
         <div class="homeHeader-right">
             <div class="homeHeader-right_select">
@@ -143,6 +143,7 @@ export default {
         getPeopleData(val) {
             if (val == '') {
                 this.changeOrgId(this.filterData.justice)
+                this.changeUserId('')
                 return
             }
             this.changeOrgId(val)
@@ -224,7 +225,7 @@ export default {
         color: #fff;
         display: inline-block;
         margin: auto;
-        font-size: 140px;
+        font-size: 132px;
         font-weight: bold;
         letter-spacing: 15px;
     }

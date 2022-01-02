@@ -45,6 +45,7 @@ export default {
         font-size: 36px;
         font-family: Microsoft YaHei;
         font-weight: 400;
+        overflow-y: auto;
         .el-table__header-wrapper {
             width: 100%;
             height: 100px;

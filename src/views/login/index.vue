@@ -1,7 +1,7 @@
 <template>
     <div class="login">
         <div class="login-header">
-            邯郸区司法局指挥中心
+            邯郸市邯山区司法局指挥中心
         </div>
         <div class="login-form">
             <el-form :model="loginForm" ref="loginForm" :rules="loginRules">
@@ -83,7 +83,7 @@ export default {
             height: 296px;
             background: url(../../assets/homePage/header.png) no-repeat center center;
             background-size: 100% 100%;
-            font-size: 140px;
+            font-size: 132px;
             font-weight: bold;
             letter-spacing: 15px;
         }

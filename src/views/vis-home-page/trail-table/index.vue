@@ -1,12 +1,12 @@
 <template>
-    <div class="trailTable">
-        <div class="trailTable_title">
+    <div :class="[userId ? 'trailTable' : 'TrailTableUser']">
+        <div class="trailTable_title" :class="{trailTableZoom: !userId}">
             轨迹描述
         </div>
         <div class="trailTable_titleEN">
             TRAJECTORY DESCRIPTION
         </div>
-        <div class="trailTable_filters">
+        <div class="trailTable_filters" v-if="userId">
             <el-table ref="trailTable" :data="tableData">
                 <el-table-column label="序号" type="index" width="200"></el-table-column>
                 <el-table-column label="定位方式"></el-table-column>
@@ -16,7 +16,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="定位时间" prop="createTime"></el-table-column>
-                <el-table-column label="轨迹描述"></el-table-column>
+                <el-table-column label="轨迹描述" prop="addr" show-overflow-tooltip></el-table-column>
             </el-table>
         </div>
     </div>
@@ -59,7 +59,20 @@ export default {
         getData() {
             this.$axios.get(`/api/v1/display/location/path?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
                 let data = res.data.data
-                this.tableData = data
+                let geocoder = new AMap.Geocoder({});
+                data.forEach(v => {
+                    let latlan = v.lng.toFixed(14) + ',' + v.lat.toFixed(14)
+                    geocoder.getAddress(latlan, function (status, result) {
+                        if (status === "complete" && result.regeocode) {
+                            v.addr = result.regeocode.formattedAddress;
+                        } else {
+                            console.log("根据经纬度查询地址失败");
+                        }
+                    })
+                })
+                setTimeout(() => {
+                    this.tableData = data
+                }, 3 * 1000)
             })
         }
     }
@@ -67,43 +80,52 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.TrailTableUser {
+    width: 100%;
+    height: 80px;
+    background: url(../../../assets/homePage/trail.png) no-repeat center center;
+    background-size: 100% 100%;
+}
 .trailTable {
     width: 100%;
     height: 958px;
     background: url(../../../assets/homePage/trail.png) no-repeat center center;
     background-size: 100% 100%;
-    &_title {
-        width: 370px;
-        height: 80px;
-        line-height: 80px;
-        text-align: center;
-        font-size: 44px;
-        font-weight: bold;
-        color: #A4C0FF;
-        display: inline-block;
-        float: left;
-        letter-spacing: 5px;
-    }
-    &_titleEN {
-        width: 450px;
-        height: 80px;
-        line-height: 80px;
-        font-size: 28px;
-        font-weight: 400;
-        color: #2557C7;
-        display: inline-block;
-        float: left;
-        text-align: left;
-        margin-left: 20px;
-    }
-    &_filters {
-        width: 1900px;
-        height: 828px;
-        padding: 0;
-        overflow: hidden;
-        float: left;
-        margin-top: 40px;
-        margin-left: 50px;
-    }
+}
+.trailTable_title {
+    width: 370px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    font-size: 44px;
+    font-weight: bold;
+    color: #A4C0FF;
+    display: inline-block;
+    float: left;
+    letter-spacing: 5px;
+}
+.trailTable_titleEN {
+    width: 450px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 28px;
+    font-weight: 400;
+    color: #2557C7;
+    display: inline-block;
+    float: left;
+    text-align: left;
+    margin-left: 20px;
+}
+.trailTableZoom {
+
+}
+.trailTable_filters {
+    width: 1900px;
+    height: 828px;
+    padding: 0;
+    overflow: hidden;
+    float: left;
+    margin-top: 40px;
+    margin-left: 50px;
 }
 </style>

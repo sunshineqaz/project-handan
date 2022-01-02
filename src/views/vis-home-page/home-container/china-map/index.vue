@@ -30,7 +30,7 @@
                             </li>
                             <li>
                                 <span>定位时间：</span>
-                                <span>{{ personInfo.ccStartTime }} - {{ personInfo.ccEndTime }}</span>
+                                <span>{{ userData.updateTime }}</span>
                             </li>
                             <li>
                                 <span>定位方式：</span>
@@ -62,13 +62,22 @@ export default {
             zoomIndex: 3,
             zoomArray: [24, 18, 12, 6],
             borderData: [], // 边界数据
+            userData: {},
             ccTypeDict: {
                 1: '管制',
                 2: '缓刑',
                 3: '假释',
                 4: '暂予监外执行'
             },
-            timer: null
+            timer: null,
+            colorDict: {
+                1: '#1bc1cd',
+                2: '#d8b226',
+                3: '#c4151c',
+                4: '#c4151c',
+                5: '#d96d1b',
+                6: '#6b707b',
+            }
         }
     },
     computed: {
@@ -76,20 +85,22 @@ export default {
     },
     watch: {
         orgId(v) {
-            this.timer = null
-            clearInterval(this.timer)
-            this.map.clearMap()
-            this.zoomIndex = 2
-            this.getLocationData()
-            this.getMapAct()
+            if (v) {
+                this.timer = null
+                clearInterval(this.timer)
+                this.zoomIndex = 2
+                this.getLocationData()
+                this.getMapAct()
+                this.initMap()
+            }
         },
         userId(v) {
             if (v) {
                 this.timer = null
                 clearInterval(this.timer)
                 this.zoomIndex = 1
-                this.map.clearMap()
                 this.getMapAct()
+                this.initMap()
                 this.getUserPosition()
                 this.getPersonInfo()
                 this.getBorderData()
@@ -98,29 +109,25 @@ export default {
         isUpdateTime() {
             this.timer = null
             clearInterval(this.timer)
-            this.map.clearMap()
             this.getMapAct()
+            this.initMap()
         }
     },
     mounted() {
         this.$nextTick(() => {
             this.getMapAct()
-            this.initMap()
-            this.getLocationData() // 地图打点
+            setTimeout(() => {
+                this.initMap()
+                this.getLocationData() // 地图打点
+            }, 3000)
         })
     },
     methods: {
         getMapAct() {
             this.timer = setInterval(() => {
-                this.zoomIndex++
-                this.zoom = this.zoomArray[this.zoomIndex]
                 this.initMap()
+                this.zoomIndex++
                 this.getLocationData() // 地图打点
-                if(this.userId && this.userId!='') {
-                    this.getUserPosition()
-                    this.getPersonInfo()
-                    this.getBorderData()
-                }
                 if ( this.zoomIndex > 3) {
                     return this.zoomIndex = 0
                 }
@@ -132,16 +139,31 @@ export default {
                 center: [115.97, 39.48],
                 zoom: this.zoomArray[this.zoomIndex]
             });
+            this.map.clearMap()
         },
         getLocationData() {
             this.locationData = []
             this.$axios.get(`/api/v1/display/location/list?actorId=${this.actorId}&deptId=${this.orgId}`).then(res => {
                 res.data.data.forEach(v => {
                     if (v.lng !== 0 && v.lat !== 0) {
-                        let marker = new AMap.Marker({
-                            icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png',
-                            size: [35, 60],
-                            position: [v.lng, v.lat.toFixed(14)],
+                        // let marker = new AMap.Marker({
+                        //     icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png',
+                        //     size: [85, 120],
+                        //     position: [v.lng, v.lat.toFixed(14)],
+                        //     map: this.map
+                        // })
+                        let circleMarker = new AMap.CircleMarker({
+                            center: [v.lng, v.lat.toFixed(14)],
+                            radius: 50,
+                            strokeColor: 'white',
+                            strokeWeight: 1,
+                            strokeOpacity: 0.5,
+                            fillColor: this.colorDict[v.es],
+                            fillOpacity: 0.5,
+                            zIndex: 10,
+                            bubble: true,
+                            cursor:'pointer',
+                            clickable: true,
                             map: this.map
                         })
                     }
@@ -205,7 +227,7 @@ export default {
                 let data = res.data.data
                 let marker = new AMap.Marker({
                     icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png',
-                    size: [35, 60],
+                    size: [85, 120],
                     position: [data.lng, data.lat.toFixed(14)],
                     map: this.map
                 })
@@ -216,6 +238,9 @@ export default {
             this.$axios.get(`/api/v1/display/user/detail?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
                 let data = res.data.data
                 this.personInfo = data
+            })
+            this.$axios.get(`/api/v1/display/location/user?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
+                this.userData = res.data.data
             })
         }
     },
