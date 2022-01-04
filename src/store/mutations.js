@@ -12,3 +12,8 @@ export const changeUserId = (state, userId) => {
 export const changeTime = (state, isUpdateTime) => {
     state.isUpdateTime = isUpdateTime
 }
+
+// 统计状态
+export const changeType = (state, typeStatus) => {
+    state.typeStatus = typeStatus
+}

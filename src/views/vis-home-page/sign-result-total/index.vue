@@ -24,7 +24,7 @@
 
 <script>
 import * as echarts from 'echarts'
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 export default {
     data() {
         return {
@@ -99,8 +99,10 @@ export default {
         this.getData()
     },
     methods: {
+        ...mapActions(['changeType']),
         handleFilter(params) {
             this.tempIndex = params + 1
+            this.changeType(this.tempIndex)
         },
         // 获取数据
         getData() {

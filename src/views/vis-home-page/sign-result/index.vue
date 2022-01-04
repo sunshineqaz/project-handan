@@ -139,7 +139,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['actorId', 'orgId', 'isUpdateTime']),
+        ...mapState(['actorId', 'orgId', 'isUpdateTime', 'typeStatus']),
     },
     watch: {
         orgId(v) {
@@ -160,6 +160,10 @@ export default {
         },
         isUpdateTime() {
             this.getData()
+        },
+        typeStatus(v) {
+            this.getData(v)
+            this.scrollAnimation()
         }
     },
     methods: {
@@ -183,25 +187,31 @@ export default {
             this.timer = setInterval(Marquee, 40)
         },
         // 获取数据
-        getData() {
+        getData(v) {
             let baseUrl = '/api/v1/display/check/'
-            let extendUrl = this.userId ? `user?actorId=${this.actorId}&userId=${this.userId}` : `dept?actorId=${this.actorId}&deptId=${this.orgId}&pageSize=9999&pageNum=1`
+            let deptUrl = v ? `dept?actorId=${this.actorId}&deptId=${this.orgId}&pageSize=9999&pageNum=1&ruleType=${v}` : `dept?actorId=${this.actorId}&deptId=${this.orgId}&pageSize=9999&pageNum=1`
+            let perUrl = v ? `user?actorId=${this.actorId}&userId=${this.userId}&ruleType=${v}` : `user?actorId=${this.actorId}&userId=${this.userId}`
+            let extendUrl = this.userId ? perUrl : deptUrl
             this.$axios.get(baseUrl + extendUrl).then(res => {
-                let data = res.data.data.list
-                let geocoder = new AMap.Geocoder({});
-                data.forEach(v => {
-                    let latlan = JSON.parse(v.checkLbs).lng + ',' + JSON.parse(v.checkLbs).lat
-                    geocoder.getAddress(latlan, function (status, result) {
-                        if (status === "complete" && result.regeocode) {
-                            v.addr = result.regeocode.formattedAddress;
-                        } else {
-                            console.log("根据经纬度查询地址失败");
-                        }
+                if (res.data.data) {
+                    let data = res.data.data.list
+                    let geocoder = new AMap.Geocoder({});
+                    data.forEach(v => {
+                        let latlan = JSON.parse(v.checkLbs).lng + ',' + JSON.parse(v.checkLbs).lat
+                        geocoder.getAddress(latlan, function (status, result) {
+                            if (status === "complete" && result.regeocode) {
+                                v.addr = result.regeocode.formattedAddress;
+                            } else {
+                                console.log("根据经纬度查询地址失败");
+                            }
+                        })
                     })
-                })
-                setTimeout(() => {
-                    this.signList = data
-                }, 3 * 1000)
+                    setTimeout(() => {
+                        this.signList = data
+                    }, 3 * 1000)
+                } else {
+                    this.signList = []
+                }
             })
         },
         // 点击弹框下钻

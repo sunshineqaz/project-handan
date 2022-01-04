@@ -8,19 +8,19 @@
         </div>
         <div class="trailTable_filters" v-if="userId">
             <el-table ref="trailTable" :data="tableData">
-                <el-table-column label="序号" type="index" width="200"></el-table-column>
-                <el-table-column label="定位方式" prop="type">
+                <el-table-column label="序号" type="index" width="150"></el-table-column>
+                <el-table-column label="定位方式" prop="type" width="300">
                     <template slot-scope="scoped">
                         {{ typeDict[scoped.row.type] }}
                     </template>
                 </el-table-column>
-                <el-table-column label="定位状态" prop="status">
+                <el-table-column label="定位状态" prop="status" width="300">
                     <template slot-scope="scoped">
                         {{ statusDict[scoped.row.status] }}
                     </template>
                 </el-table-column>
-                <el-table-column label="定位时间" prop="createTime"></el-table-column>
-                <el-table-column label="轨迹描述" prop="addr" show-overflow-tooltip></el-table-column>
+                <el-table-column label="定位时间" prop="createTime" width="400"></el-table-column>
+                <el-table-column label="轨迹描述" prop="addr"></el-table-column>
             </el-table>
         </div>
     </div>

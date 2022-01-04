@@ -48,16 +48,16 @@ export default {
         overflow-y: auto;
         .el-table__header-wrapper {
             width: 100%;
-            height: 100px;
+            min-height: 100px;
             background: #1F4BB1;
         }
         tr, td, th {
             background: transparent;
             color: #FFFFFF;
             padding: 0;
-            height: 100px;
+            min-height: 100px;
             .cell {
-                height: 100px;
+                min-height: 100px;
                 line-height: 100px;
             }
         }

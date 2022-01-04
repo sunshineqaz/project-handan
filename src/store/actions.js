@@ -12,3 +12,8 @@ export const changeUserId = ({ commit }, payload) => {
 export const changeTime = ({ commit }, payload) => {
     commit('changeTime', payload)
 }
+
+// 刷新倒计时
+export const changeType = ({ commit }, payload) => {
+    commit('changeType', payload)
+}
