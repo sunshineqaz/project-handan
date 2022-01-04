@@ -9,7 +9,11 @@
         <div class="trailTable_filters" v-if="userId">
             <el-table ref="trailTable" :data="tableData">
                 <el-table-column label="序号" type="index" width="200"></el-table-column>
-                <el-table-column label="定位方式"></el-table-column>
+                <el-table-column label="定位方式" prop="type">
+                    <template slot-scope="scoped">
+                        {{ typeDict[scoped.row.type] }}
+                    </template>
+                </el-table-column>
                 <el-table-column label="定位状态" prop="status">
                     <template slot-scope="scoped">
                         {{ statusDict[scoped.row.status] }}
@@ -38,6 +42,13 @@ export default {
                 7: '未开户',
                 8: '无电话',
                 9: '未绑定'
+            },
+            typeDict: {
+                1: 'gps',
+                2: '联通基站',
+                3: '手环',
+                4: '移动基站',
+                5: '电信基站'
             }
         }
     },
