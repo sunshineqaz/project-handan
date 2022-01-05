@@ -17,3 +17,13 @@ export const changeTime = ({ commit }, payload) => {
 export const changeType = ({ commit }, payload) => {
     commit('changeType', payload)
 }
+
+// 详情
+export const changeShowDetail = ({ commit }, payload) => {
+    commit('changeShowDetail', payload)
+}
+
+// 地图打点状态
+export const changeMapStatus = ({ commit }, payload) => {
+    commit('changeMapStatus', payload)
+}

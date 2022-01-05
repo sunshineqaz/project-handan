@@ -17,3 +17,13 @@ export const changeTime = (state, isUpdateTime) => {
 export const changeType = (state, typeStatus) => {
     state.typeStatus = typeStatus
 }
+
+// 详情
+export const changeShowDetail = (state, isShowDetail) => {
+    state.isShowDetail = isShowDetail
+}
+
+// 地图打点状态
+export const changeMapStatus = (state, mapStatus) => {
+    state.mapStatus = mapStatus
+}

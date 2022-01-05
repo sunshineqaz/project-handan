@@ -104,7 +104,7 @@ export default {
         this.getAreaData()
     },
     methods: {
-        ...mapActions(['changeOrgId', 'changeUserId', 'changeTime']),
+        ...mapActions(['changeOrgId', 'changeUserId', 'changeTime', 'changeShowDetail']),
         // 当前时间
         getTimeData() {
             let tempTime = dayjs(new Date()).valueOf()
@@ -156,6 +156,7 @@ export default {
         // 选择人员
         changeUserData(val) {
             this.changeUserId(val)
+            this.changeShowDetail(true)
         },
         // 全屏
         handleScreen() {

@@ -2,7 +2,8 @@
     <div class="china_map_container">
         <div id="mapContainer" class="mapContainer" ref="mapContainer"></div>
         <div class="map_position" v-for="(item, index) in geoInfoData" :key="index" :style="{left: item[0] + 'px', top: item[1] + 'px'}" v-if="isShowPosition"></div>
-        <div class="supervise_personal" v-if="userId && userId!=''">
+        <div class="supervise_personal" v-if="isShowPosition">
+            <span class="supervise_personal_info_close" @click="handleClose"></span>
             <div class="supervise_personal_info">
                 <p class="supervise_personal_info_title">个人信息</p>
                 <div class="supervise_personal_info_content">
@@ -41,12 +42,12 @@
                     </div>
                 </div>
             </div>
-            <tracing class="supervise_tracing"></tracing>
+            <tracing class="supervise_tracing" @close="handleClose"></tracing>
         </div>
     </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import tracing from '../tracing.vue'
 export default {
     components: {
@@ -60,7 +61,7 @@ export default {
             geoInfoData: [],
             personInfo: {},
             zoomIndex: 3,
-            zoomArray: [24, 18, 12, 6],
+            zoomArray: [18, 14, 10, 6],
             borderData: [], // 边界数据
             userData: {},
             ccTypeDict: {
@@ -81,7 +82,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['actorId', 'orgId', 'userId']),
+        ...mapState(['actorId', 'orgId', 'userId', 'isShowDetail', 'mapStatus']),
     },
     watch: {
         orgId(v) {
@@ -90,12 +91,13 @@ export default {
                 clearInterval(this.timer)
                 this.zoomIndex = 2
                 this.getLocationData()
-                this.getMapAct()
+                // this.getMapAct()
                 this.initMap()
             }
         },
         userId(v) {
             if (v) {
+                this.isShowPosition = true
                 this.timer = null
                 clearInterval(this.timer)
                 this.zoomIndex = 1
@@ -111,11 +113,31 @@ export default {
             clearInterval(this.timer)
             this.getMapAct()
             this.initMap()
+        },
+        isShowDetail(v) {
+            if (!v) {
+                this.isShowPosition = false
+            } else {
+                this.isShowPosition = true
+            }
+        },
+        mapStatus(es) {
+            this.timer = null
+            clearInterval(this.timer)
+            this.zoomIndex = 2
+            if (!es || es == 100) {
+                this.getLocationData()
+            }
+            if (es) {
+                this.getLocationData(es)
+            }
+            this.getMapAct()
+            this.initMap()
         }
     },
     mounted() {
         this.$nextTick(() => {
-            this.getMapAct()
+            // this.getMapAct()
             setTimeout(() => {
                 this.initMap()
                 this.getLocationData() // 地图打点
@@ -123,6 +145,7 @@ export default {
         })
     },
     methods: {
+        ...mapActions(['changeUserId', 'changeShowDetail']),
         getMapAct() {
             this.timer = setInterval(() => {
                 this.initMap()
@@ -141,17 +164,20 @@ export default {
             });
             this.map.clearMap()
         },
-        getLocationData() {
+        getLocationData(es) {
             this.locationData = []
             this.$axios.get(`/api/v1/display/location/list?actorId=${this.actorId}&deptId=${this.orgId}`).then(res => {
-                res.data.data.forEach(v => {
+                let _this = this
+                let positionData = []
+                if (es) {
+                    positionData = res.data.data.filter(item => {
+                        return item.es == es
+                    })
+                } else {
+                    positionData = res.data.data
+                }
+                positionData.forEach(v => {
                     if (v.lng !== 0 && v.lat !== 0) {
-                        // let marker = new AMap.Marker({
-                        //     icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png',
-                        //     size: [85, 120],
-                        //     position: [v.lng, v.lat.toFixed(14)],
-                        //     map: this.map
-                        // })
                         let circleMarker = new AMap.CircleMarker({
                             center: [v.lng, v.lat.toFixed(14)],
                             radius: 50,
@@ -165,6 +191,10 @@ export default {
                             cursor:'pointer',
                             clickable: true,
                             map: this.map
+                        })
+                        circleMarker.on('click', function(e) {
+                            _this.changeUserId(v.uId)
+                            _this.changeShowDetail(true)
                         })
                     }
                 })
@@ -242,6 +272,9 @@ export default {
             this.$axios.get(`/api/v1/display/location/user?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
                 this.userData = res.data.data
             })
+        },
+        handleClose() {
+            this.isShowPosition = false
         }
     },
     beforeDestroy() {
@@ -259,6 +292,9 @@ export default {
     #mapContainer {
         width: 100%;
         height: 100%;
+        .amap-labels {
+            font-size: 36px;
+        }
     }
     .map_position {
         width: 648px;
@@ -273,6 +309,16 @@ export default {
         display: flex;
         width: 100%;
         height: 660px;
+        &_info_close {
+            width: 36px;
+            height: 36px;
+            position: absolute;
+            background: url(../../../../assets/homePage/close.png) no-repeat center center;
+            background-size: 100% 100%;
+            top: -36px;
+            right: 0;
+            cursor: pointer;
+        }
         &_info {
             width: 70%;
             height: 100%;

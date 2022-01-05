@@ -57,7 +57,6 @@
                     <div class="left_content_bottom_container">
                         <div class="type_info">
                             <span v-show="detailData.ccType" class="type">{{ getType(detailData.ccType) }}</span>
-                            <!-- <span v-show="detailData.ccLevel" class="gz">{{ detailData.ccLevel }}</span> -->
                             <span v-show="detailData.crime" class="fz_type">{{ detailData.crime }}</span>
                         </div>
                         <ul>
@@ -82,6 +81,7 @@
                 </div>
             </div>
             <div class="right_content">
+                <span class="right_content_close" @click="handleClose"></span>
                 <div class="right_content_container">
                     <ul>
                         <li>
@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 export default {
     data() {
         return {
@@ -139,7 +139,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['actorId', 'orgId', 'isUpdateTime', 'typeStatus']),
+        ...mapState(['actorId', 'orgId', 'isUpdateTime', 'typeStatus', 'isShowDetail']),
     },
     watch: {
         orgId(v) {
@@ -164,9 +164,17 @@ export default {
         typeStatus(v) {
             this.getData(v)
             this.scrollAnimation()
+        },
+        isShowDetail(v) {
+            if (!v) {
+                this.isShow = true
+            } else {
+                this.isShow = false
+            }
         }
     },
     methods: {
+        ...mapActions(['changeShowDetail']),
         // 滚动
         scrollAnimation() {
             this.timer = null
@@ -221,6 +229,7 @@ export default {
             this.personData = item
             this.getDetaiData()
             this.getBorderData()
+            this.changeShowDetail(false)
         },
         // 获取下钻数据
         getDetaiData() {
@@ -305,6 +314,9 @@ export default {
             } else if (v == 4) {
                 return '暂予监外执行'
             }
+        },
+        handleClose() {
+            this.isShow = false
         }
     },
     beforeDestroy() {
@@ -555,6 +567,16 @@ export default {
             background: rgba(36, 73, 159, 0.8);
             border-top: 4px solid #2B69F8;
             border-bottom: 4px solid #2B69F8;
+            &_close {
+                width: 36px;
+                height: 36px;
+                position: absolute;
+                background: url(../../../assets/homePage/close.png) no-repeat center center;
+                background-size: 100% 100%;
+                top: -36px;
+                right: 0;
+                cursor: pointer;
+            }
             &_container {
                 height: 972px;
                 font-size: 36px;
