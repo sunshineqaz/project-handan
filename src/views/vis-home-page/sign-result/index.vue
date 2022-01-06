@@ -135,7 +135,8 @@ export default {
             personData: {},
             signAddr: '',
             tracingData: [],
-            timer: null
+            timer: null,
+            dataAll: [] // 全量数据
         }
     },
     computed: {
@@ -162,7 +163,7 @@ export default {
             this.getData()
         },
         typeStatus(v) {
-            this.getData(v)
+            this.changeSignData(v)
             this.scrollAnimation()
         },
         isShowDetail(v) {
@@ -194,11 +195,20 @@ export default {
             }
             this.timer = setInterval(Marquee, 40)
         },
+        changeSignData(v) {
+            if (v) {
+                this.signList = this.dataAll.filter(item => {
+                    return item.checkStatus == v
+                })
+            } else {
+                this.signList = this.dataAll
+            }
+        },
         // 获取数据
-        getData(v) {
+        getData() {
             let baseUrl = '/api/v1/display/check/'
-            let deptUrl = v ? `dept?actorId=${this.actorId}&deptId=${this.orgId}&pageSize=9999&pageNum=1&ruleType=${v}` : `dept?actorId=${this.actorId}&deptId=${this.orgId}&pageSize=9999&pageNum=1`
-            let perUrl = v ? `user?actorId=${this.actorId}&userId=${this.userId}&ruleType=${v}` : `user?actorId=${this.actorId}&userId=${this.userId}`
+            let deptUrl = `dept?actorId=${this.actorId}&deptId=${this.orgId}&pageSize=9999&pageNum=1`
+            let perUrl = `user?actorId=${this.actorId}&userId=${this.userId}`
             let extendUrl = this.userId ? perUrl : deptUrl
             this.$axios.get(baseUrl + extendUrl).then(res => {
                 if (res.data.data) {
@@ -215,9 +225,11 @@ export default {
                         })
                     })
                     setTimeout(() => {
-                        this.signList = data
+                        this.dataAll = data
+                        this.signList = this.dataAll
                     }, 3 * 1000)
                 } else {
+                    this.dataAll = []
                     this.signList = []
                 }
             })

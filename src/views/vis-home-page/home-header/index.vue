@@ -90,6 +90,8 @@ export default {
         ...mapState(['actorId'])
     },
     mounted() {
+        console.log(window.screen.width + '*' + window.screen.height, '屏幕分辨率')
+        console.log(document.body.clientWidth, '屏幕宽高')
         this.getTimeData()
         this.curTime = setInterval(() => {
             this.getTimeData()
