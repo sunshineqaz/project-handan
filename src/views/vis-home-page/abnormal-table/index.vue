@@ -1,17 +1,19 @@
 <template>
     <div :class="[userId ? 'abnormalTable' : 'abnormalTableUser']">
-        <div class="abnormalTable_title">
-            异常列表
-        </div>
-        <div class="abnormalTable_titleEN">
-            EXCEPTION LIST
-        </div>
+        <template v-if="userId">
+            <div class="abnormalTable_title">
+                异常列表
+            </div>
+            <div class="abnormalTable_titleEN">
+                EXCEPTION LIST
+            </div>
+        </template>
         <div class="abnormalTable_filters">
             <el-table :data="tableData" ref="abnormalTable">
-                <el-table-column label="序号" type="index" width="200"></el-table-column>
-                <el-table-column label="姓名" prop="userName"></el-table-column>
-                <el-table-column label="机构" prop="deptName"></el-table-column>
-                <el-table-column label="异常信息" prop="exceName"></el-table-column>
+                <el-table-column label="序号" type="index" width="60"></el-table-column>
+                <el-table-column label="姓名" prop="userName" width="80"></el-table-column>
+                <el-table-column label="机构" prop="deptName" width="125"></el-table-column>
+                <el-table-column label="异常信息" prop="exceName" width="125"></el-table-column>
                 <el-table-column label="异常开始时间" prop="createTime"></el-table-column>
             </el-table>
         </div>
@@ -55,59 +57,57 @@ export default {
 <style lang="less" scoped>
 .abnormalTableUser {
     width: 100%;
-    height: 1676px;
+    height: 91%;
     background: url(../../../assets/homePage/abnormalUser.png) no-repeat center center;
     background-size: 100% 100%;
-    margin-bottom: 30px;
+    margin-bottom: 0.5rem;
     .abnormalTable_filters {
-        width: 1900px;
-        height: 1578px;
+        width: 96%;
+        height: 90%;
         padding: 0;
         overflow: hidden;
         float: left;
-        margin-top: 40px;
-        margin-left: 50px;
+        margin-top: 3.5rem;
+        margin-left: 1rem;
     }
 }
 .abnormalTable {
     width: 100%;
-    height: 798px;
+    height: 48%;
     background: url(../../../assets/homePage/abnormal.png) no-repeat center center;
     background-size: 100% 100%;
-    margin-bottom: 30px;
+    margin-bottom: 0.5rem;
     .abnormalTable_filters {
-        width: 1900px;
-        height: 678px;
+        width: 96%;
+        height: 90%;
         padding: 0;
         overflow: hidden;
         float: left;
-        margin-top: 40px;
-        margin-left: 50px;
+        margin-top: 1.5rem;
+        margin-left: 1rem;
     }
 }
 .abnormalTable_title {
-    width: 370px;
-    height: 80px;
-    line-height: 80px;
-    text-align: center;
-    font-size: 44px;
+    width: 18%;
+    height: 10%;
+    font-size: 1rem;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #A4C0FF;
-    display: inline-block;
     float: left;
-    letter-spacing: 5px;
 }
 .abnormalTable_titleEN {
-    width: 450px;
-    height: 80px;
-    line-height: 80px;
-    font-size: 28px;
+    width: 35%;
+    height: 10%;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
     font-weight: 400;
     color: #2557C7;
-    display: inline-block;
     float: left;
-    text-align: left;
-    margin-left: 20px;
+    margin-left: 0.5rem;
 }
 </style>
 <style lang="less">

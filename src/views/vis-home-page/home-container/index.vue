@@ -45,19 +45,19 @@ export default {
     display: flex;
     justify-content: space-between;
     .homeContainer_charts {
-        width: 2000px;
+        width: 30%;
         height: 100%;
     }
     .homeContainer_map {
-        width: 3520px;
+        width: 47%;
         height: 100%;
         position: relative;
         .statics {
             z-index: 6;
             position: absolute;
             width: 100%;
-            height: 300px;
-            top: 25px;
+            height: 5rem;
+            top: 1rem;
         }
     }
 }

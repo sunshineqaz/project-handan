@@ -50,7 +50,7 @@ export default {
                     es: 100
                 },
                 {
-                    number: null,
+                    number: 0,
                     title: '定位成功率'
                 }
             ]
@@ -104,7 +104,7 @@ export default {
     flex-wrap: nowrap;
     justify-content: space-between;
     color: #fff;
-    font-size: 48px;
+    font-size: 1rem;
     .list__detail {
         width: 12%;
         height: 100%;
@@ -113,8 +113,8 @@ export default {
         cursor: pointer;
         &__number {
             width: 100%;
-            font-size: 76px;
-            padding-top: 70px;
+            font-size: 1.5rem;
+            padding-top: 1rem;
         }
         .number-0 {
             color: #1bc1cd;

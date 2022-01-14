@@ -8,18 +8,18 @@
         </div>
         <div class="trailTable_filters" v-if="userId">
             <el-table ref="trailTable" :data="tableData">
-                <el-table-column label="序号" type="index" width="150"></el-table-column>
-                <el-table-column label="定位方式" prop="type" width="300">
+                <el-table-column label="序号" type="index" width="60"></el-table-column>
+                <el-table-column label="定位方式" prop="type" width="100">
                     <template slot-scope="scoped">
                         {{ typeDict[scoped.row.type] }}
                     </template>
                 </el-table-column>
-                <el-table-column label="定位状态" prop="status" width="300">
+                <el-table-column label="定位状态" prop="status" width="100">
                     <template slot-scope="scoped">
                         {{ statusDict[scoped.row.status] }}
                     </template>
                 </el-table-column>
-                <el-table-column label="定位时间" prop="createTime" width="400"></el-table-column>
+                <el-table-column label="定位时间" prop="createTime"></el-table-column>
                 <el-table-column label="轨迹描述" prop="addr"></el-table-column>
             </el-table>
         </div>
@@ -93,50 +93,69 @@ export default {
 <style lang="less" scoped>
 .TrailTableUser {
     width: 100%;
-    height: 80px;
+    height: 4rem;
     background: url(../../../assets/homePage/trail.png) no-repeat center center;
     background-size: 100% 100%;
+    .trailTable_title {
+        width: 18%;
+        height: 100%;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #A4C0FF;
+        float: left;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .trailTable_titleEN {
+        width: 45%;
+        height: 100%;
+        font-size: 1rem;
+        font-weight: 400;
+        color: #2557C7;
+        float: left;
+        margin-left: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 .trailTable {
     width: 100%;
-    height: 958px;
+    height: 51%;
     background: url(../../../assets/homePage/trail.png) no-repeat center center;
     background-size: 100% 100%;
-}
-.trailTable_title {
-    width: 370px;
-    height: 80px;
-    line-height: 80px;
-    text-align: center;
-    font-size: 44px;
-    font-weight: bold;
-    color: #A4C0FF;
-    display: inline-block;
-    float: left;
-    letter-spacing: 5px;
-}
-.trailTable_titleEN {
-    width: 450px;
-    height: 80px;
-    line-height: 80px;
-    font-size: 28px;
-    font-weight: 400;
-    color: #2557C7;
-    display: inline-block;
-    float: left;
-    text-align: left;
-    margin-left: 20px;
-}
-.trailTableZoom {
-
+    .trailTable_title {
+        width: 18%;
+        height: 8%;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #A4C0FF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        float: left;
+        margin-top: -3%;
+    }
+    .trailTable_titleEN {
+        width: 45%;
+        height: 10%;
+        font-size: 1rem;
+        font-weight: 400;
+        color: #2557C7;
+        display: inline-block;
+        float: left;
+        text-align: left;
+        margin-left: 0.5rem;
+        margin-top: -1%;
+    }
 }
 .trailTable_filters {
-    width: 1900px;
-    height: 828px;
-    padding: 0;
+    width: 96%;
+    height: 84%;
     overflow: hidden;
     float: left;
-    margin-top: 40px;
-    margin-left: 50px;
+    margin-top: 0.2rem;
+    margin-left: 1rem;
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
     <div class="china_map_container">
         <div id="mapContainer" class="mapContainer" ref="mapContainer"></div>
-        <div class="map_position" v-for="(item, index) in geoInfoData" :key="index" :style="{left: item[0] + 'px', top: item[1] + 'px'}" v-if="isShowPosition"></div>
         <div class="supervise_personal" v-if="isShowPosition">
             <span class="supervise_personal_info_close" @click="handleClose"></span>
             <div class="supervise_personal_info">
@@ -58,7 +57,6 @@ export default {
             map: null,
             isShowPosition: false,
             locationData: [],
-            geoInfoData: [],
             personInfo: {},
             zoomIndex: 3,
             zoomArray: [18, 14, 10, 6],
@@ -87,8 +85,8 @@ export default {
     watch: {
         orgId(v) {
             if (v) {
-                this.timer = null
                 clearInterval(this.timer)
+                this.timer = null
                 this.zoomIndex = 2
                 this.getLocationData()
                 // this.getMapAct()
@@ -98,8 +96,6 @@ export default {
         userId(v) {
             if (v) {
                 this.isShowPosition = true
-                this.timer = null
-                clearInterval(this.timer)
                 this.zoomIndex = 1
                 this.getMapAct()
                 this.initMap()
@@ -109,8 +105,6 @@ export default {
             }
         },
         isUpdateTime() {
-            this.timer = null
-            clearInterval(this.timer)
             this.getMapAct()
             this.initMap()
         },
@@ -122,8 +116,6 @@ export default {
             }
         },
         mapStatus(es) {
-            this.timer = null
-            clearInterval(this.timer)
             this.zoomIndex = 2
             if (!es || es == 100) {
                 this.getLocationData()
@@ -147,6 +139,8 @@ export default {
     methods: {
         ...mapActions(['changeUserId', 'changeShowDetail']),
         getMapAct() {
+            clearInterval(this.timer)
+            this.timer = null
             this.timer = setInterval(() => {
                 this.initMap()
                 this.zoomIndex++
@@ -180,7 +174,7 @@ export default {
                     if (v.lng !== 0 && v.lat !== 0) {
                         let circleMarker = new AMap.CircleMarker({
                             center: [v.lng, v.lat.toFixed(14)],
-                            radius: 50,
+                            radius: 20,
                             strokeColor: 'white',
                             strokeWeight: 1,
                             strokeOpacity: 0.5,
@@ -257,7 +251,7 @@ export default {
                 let data = res.data.data
                 let marker = new AMap.Marker({
                     icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_bs.png',
-                    size: [85, 120],
+                    size: [45, 55],
                     position: [data.lng, data.lat.toFixed(14)],
                     map: this.map
                 })
@@ -278,8 +272,8 @@ export default {
         }
     },
     beforeDestroy() {
-        this.timer = null
         clearInterval(this.timer)
+        this.timer = null
     }
 }
 </script>
@@ -293,29 +287,22 @@ export default {
         width: 100%;
         height: 100%;
         .amap-labels {
-            font-size: 36px;
+            font-size: 2rem;
         }
-    }
-    .map_position {
-        width: 648px;
-        height: 246px;
-        background: url(../../../../assets/map/signPop.png) no-repeat center center;
-        background-size: 100% 100%;
-        position: absolute;
     }
     .supervise_personal {
         position: absolute;
-        bottom: 25px;
+        bottom: 1rem;
         display: flex;
         width: 100%;
-        height: 660px;
+        height: 35%;
         &_info_close {
-            width: 36px;
-            height: 36px;
+            width: 1.2rem;
+            height: 1.2rem;
             position: absolute;
             background: url(../../../../assets/homePage/close.png) no-repeat center center;
             background-size: 100% 100%;
-            top: -36px;
+            top: -1.2rem;
             right: 0;
             cursor: pointer;
         }
@@ -326,62 +313,56 @@ export default {
             border: 2px solid #2B69F8;
             border-radius: 10px;
             &_title {
-                height: 100px;
-                line-height: 100px;
-                font-size: 36px;
+                height: 13%;
+                font-size: 1.2rem;
                 color: #fff;
                 text-align: left;
                 margin: 0;
                 padding: 0;
-                padding-left: 35px;
+                padding-left: 0.5rem;
                 background: #1F4BB1;
+                display: flex;
+                align-items: center;
             }
             &_content {
                 position: relative;
-                width: 100%;
-                height: calc(100% - 100px);
-                padding-left: 35px;
-                padding-top: 28px;
+                width: calc(100% - 1rem);
+                height: calc(87% - 1rem);
+                padding: 0.5rem;
                 .portrait {
                     float: left;
-                    width: 506px;
-                    height: 506px;
+                    width: 7rem;
+                    height: 7rem;
                     background: url(../../../../assets/map/portrait.png) no-repeat;
                     background-size: 100% 100%;
                 }
                 .content {
-                    float: left;
-                    margin-left: 48px;
+                    width: calc(100% - 8rem);
+                    margin-left: 8rem;
                     text-align: left;
                     .name_info {
-                        margin-bottom: 67px;
+                        margin-bottom: 0.5rem;
                         span {
                             display: inline-block;
                         }
                         .name {
-                            font-size: 50px;
+                            font-size: 1.5rem;
                             color: #fff;
-                            margin-right: 57px;
+                            margin-right: 0.5rem;
                         }
                         .type {
-                            width: 200px;
-                            height: 80px;
-                            line-height: 80px;
-                            font-size: 36px;
+                            width: 25%;
+                            font-size: 1.2rem;
                             color: #FFFF59;
                             text-align: center;
-                            margin-right: 26px;
                             background: url(../../../../assets/map/type_1.png) no-repeat;
                             background-size: 100% 100%;
                         }
                         .gz {
-                            width: 200px;
-                            height: 80px;
-                            line-height: 80px;
-                            font-size: 36px;
+                            width: 25%;
+                            font-size: 1.2rem;
                             color: #FF7E15;
                             text-align: center;
-                            margin-right: 26px;
                             background: url(../../../../assets/map/type_2.png) no-repeat;
                             background-size: 100% 100%;
                         }
@@ -390,21 +371,22 @@ export default {
                         margin: 0;
                         padding: 0;
                         li {
-                            font-size: 36px;
+                            font-size: 1.2rem;
                             color: #fff;
-                            margin-bottom: 20px;
+                            margin-bottom: 0.5rem;
                         }
                     }
                     .sign_result {
                         position: absolute;
-                        top: 59px;
-                        right: 52px;
-                        width: 314.3px;
-                        height: 147px;
-                        line-height: 147px;
-                        font-size: 36px;
+                        top: 2rem;
+                        right: 2rem;
+                        width: 20%;
+                        height: 30%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-size: 1.2rem;
                         color: #fff;
-                        text-align: center;
                         background: url(../../../../assets/map/result_fail.png) no-repeat;
                         background-size: 100% 100%;
                     }
@@ -413,7 +395,7 @@ export default {
         }
         .supervise_tracing {
             width: 30%;
-            height: 660px;
+            height: 100%;
             float: right;
             background: #0C1823;
             border: 2px solid #2B69F8;

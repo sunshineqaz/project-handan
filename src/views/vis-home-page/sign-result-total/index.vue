@@ -204,58 +204,60 @@ export default {
 <style lang="less" scoped>
 .signResult {
     width: 100%;
-    height: 750px;
+    height: 30%;
     background: url(../../../assets/homePage/signResult.png) no-repeat center center;
     background-size: 100% 100%;
+    position: relative;
     &_title {
-        width: 370px;
-        height: 80px;
-        line-height: 80px;
-        text-align: center;
-        font-size: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 19%;
+        height: 10%;
+        font-size: 1rem;
         font-weight: bold;
         color: #A4C0FF;
-        display: inline-block;
         float: left;
-        letter-spacing: 5px;
     }
     &_titleEN {
-        width: 450px;
-        height: 80px;
-        line-height: 80px;
-        font-size: 28px;
+        width: 50%;
+        height: 10%;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
         font-weight: 400;
         color: #2557C7;
-        display: inline-block;
         float: left;
-        text-align: left;
-        margin-left: 20px;
+        margin-left: 0.5rem;
     }
     &_total {
-        width: 300px;
-        height: 70px;
+        width: 15%;
+        height: 10%;
         background: #071D51;
-        font-size: 32px;
+        font-size: 1rem;
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: #18A1F4;
-        line-height: 60px;
         background: url(../../../assets/homePage/resultAll.png) no-repeat center center;
         background-size: 100% 100%;
         float: right;
-        margin-right: 48px;
-        margin-top: 45px;
+        margin-right: 1rem;
+        margin-top: 2rem;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     &_filters {
-        width: 1196px;
-        height: 544px;
+        width: 72%;
+        height: 80%;
         float: left;
-        margin-top: 30px;
+        margin-top: 0.5rem;
+        padding-left: 0.5rem;
         display: flex;
         flex-wrap: wrap;
         > li {
-            padding: 34px 40px;
+            padding: 0.5rem;
             text-align: left;
             display: flex;
             flex-direction: column;
@@ -263,24 +265,26 @@ export default {
             background-size: 100%;
             background-repeat: no-repeat;
             background-position: center center;
+            display: flex;
+            justify-content: center;
             .filters_key {
-                font-size: 36px;
+                font-size: 1.2rem;
                 font-family: Microsoft YaHei;
                 font-weight: bold;
             }
             .filters_value {
-                font-size: 80px;
+                font-size: 1.5rem;
                 font-family: zcoolqingkehuangyouti;
                 font-weight: 400;
             }
         }
         > li:nth-child(odd) {
-            width: 440px;
+            width: 39%;
             height: auto;
-            margin-right: 35px;
+            margin-right: 0.3rem;
         }
         > li:nth-child(even) {
-            width: 561px;
+            width: 49.5%;
             height: auto;
         }
         .signActive {
@@ -321,19 +325,20 @@ export default {
         }
     }
     &_charts {
-        width: 496px;
-        height: 496px;
+        width: 30%;
+        height: 35%;
         float: left;
-        margin-left: 58px;
-        margin-top: 16px;
-        position: relative;
+        position: absolute;
+        right: 0;
+        top: 52%;
+        transform: translateY(-50%);
         .charts_container {
             width: 100%;
             height: 100%;
         }
         .charts_photo {
-            width: 350px;
-            height: 350px;
+            width: 9rem;
+            height: 11rem;
             border-radius: 50%;
             position: absolute;
             top: 50%;

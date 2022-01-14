@@ -14,6 +14,7 @@
         "build": "node build/build.js"
     },
     "dependencies": {
+        "base-64": "^1.0.0",
         "dayjs": "^1.10.7",
         "echarts": "^4.8.0",
         "element-ui": "^2.15.6",

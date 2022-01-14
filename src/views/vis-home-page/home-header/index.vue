@@ -87,7 +87,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['actorId'])
+        ...mapState(['actorId', 'deptId'])
     },
     mounted() {
         console.log(window.screen.width + '*' + window.screen.height, '屏幕分辨率')
@@ -129,7 +129,7 @@ export default {
         },
         // 获取司法局列表
         getJusticeData() {
-            this.$axios.get(`/api/v1/display/dept/info?actorId=${this.actorId}&deptId=3684`).then(res => {
+            this.$axios.get(`/api/v1/display/dept/info?actorId=${this.actorId}&deptId=${this.deptId}`).then(res => {
                 this.justiceOpts = [res.data.data]
                 this.filterData.justice = res.data.data.deptId
                 this.changeOrgId(this.filterData.justice)
@@ -137,7 +137,7 @@ export default {
         },
         // 获取司法所列表
         getAreaData() {
-            this.$axios.get(`/api/v1/display/dept/list?actorId=${this.actorId}&deptId=3684`).then(res => {
+            this.$axios.get(`/api/v1/display/dept/list?actorId=${this.actorId}&deptId=${this.deptId}`).then(res => {
                 this.areaOpts = res.data.data
             })
         },
@@ -183,14 +183,14 @@ export default {
 
 <style lang="less">
 .vis-homeHeader {
-    width: calc(100% - 88px);
+    width: 100%;
     height: 100%;
-    padding: 0 44px;
+    padding: 0;
+    position: relative;
     .homeHeader-left {
         width: 35%;
-        height: 150px;
+        height: 100%;
         margin: auto;
-        margin-top: 43px;
         float: left;
         .el-row {
             width: 100%;
@@ -198,18 +198,18 @@ export default {
             .el-col {
                 height: 100%;
                 font-weight: 400;
-                line-height: 25px;
-                font-size: 50px;
-                line-height: 150px;
+                font-size: 1.1rem;
                 font-weight: bold;
                 color: #18A1F4;
-                text-align: center;
-                margin-right: 35px;
+                margin-right: 0.5rem;
                 background: url(../../../assets/homePage/signTab.png) no-repeat center center;
-                background-size: 100% 100%;
+                background-size: 100% 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .el-col:nth-child(1) {
-                font-size: 72px;
+                font-size: 1.1rem;
                 text-align: left;
                 color: #18A1F4;
                 font-family: zcoolqingkehuangyouti;
@@ -225,25 +225,33 @@ export default {
         } 
     }
     .homeHeader_title {
+        width: 30%;
+        height: 80%;
         color: #fff;
-        display: inline-block;
-        margin: auto;
-        font-size: 132px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
         font-weight: bold;
-        letter-spacing: 15px;
     }
     .homeHeader-right {
         width: 35%;
-        height: 150px;
+        height: 100%;
         float: right;
-        margin-top: 43px;
+        position: absolute;
+        top: 0;
+        right: 0;
         display: flex;
+        align-items: center;
+        justify-content: center;
         &_select {
-            width: 590px;
-            height: 150px;
+            width: 21%;
+            height: 100%;
             background: url(../../../assets/homePage/filter.png) no-repeat center center;
-            background-size: 100% 100%;
-            margin-right: 78px;
+            background-size: 100% 40%;
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
             .el-select {
                 width: 100%;
                 .el-input__inner {
@@ -251,21 +259,21 @@ export default {
                     height: 100%;
                     border: none;
                     background: none;
-                    height: 150px;
-                    font-size: 50px;
+                    height: 100%;
+                    font-size: 1.1rem;
                     font-family: Microsoft YaHei;
                     font-weight: 400;
                     color: #18A1F4;
-                    line-height: 150px;
-                    padding-left: 38px;
                 }
                 .el-input__suffix {
-                    padding-right: 38px;
+                    padding-right: 0.3em;
                 }
                 .el-input__icon {
-                    font-size: 50px;
-                    width: 50px;
+                    font-size: 1.5rem;
+                    width: 1.5rem;
                     color: #18A1F4;
+                    display: flex;
+                    align-items: center;
                 }
                 .el-input__inner::-webkit-input-placeholder {
                     color: #18A1F4;
@@ -273,49 +281,50 @@ export default {
             }
         }
         &_time {
-            width: 332px;
-            margin-right: 78px;
-            font-size: 72px;
+            width: 15%;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
             font-family: "HYGJM";
             font-weight: 400;
             color: #18A1F4;
             text-align: center;
             .time_tip {
-                font-size: 28px;
+                font-size: 1rem;
             }
         }
         &_buttons {
             .el-button {
-                width: 96px;
-                height: 96px;
-                background-size: 38px;
+                width: 2rem;
+                height: 2.4rem;
+                background-size: 1rem;
                 background-repeat: no-repeat;
                 background-position: center center;
-                margin-top: 27px;
             }
             .fullScreen {
                 background-image: url(../../../assets/homePage/fullScreen.svg);
-                margin-right: 33px;
+                margin-right: 0.2rem;
             }
             .loginOut {
                 background-image: url(../../../assets/homePage/loginOut.svg);
+                margin-left: 0;
             }
         }
     }
 }
 .el-select-dropdown {
-    height: 767px;
+    height: 30%;
     background: #000000 !important;
-    border: 4px solid #024F7E;
+    border: 1px solid #024F7E;
+    overflow: hidden;
+    overflow-y: auto;
     .el-select-dropdown__wrap {
-        max-height: 767px !important;
+        max-height: 30% !important;
     }
     .el-select-dropdown__item {
-        font-size: 50px;
+        font-size: 1rem;
         color: #fff;
-        height: 150px;
-        line-height: 150px;
-        padding: 0 30px;
+        height: 5%;
+        padding: 0 0.5rem;
     }
     .el-select-dropdown__item:hover,
     .el-select-dropdown__item.hover,

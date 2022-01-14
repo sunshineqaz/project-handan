@@ -1,3 +1,13 @@
+// 司法所
+export const changeActorId = (state, actorId) => {
+    state.actorId = actorId
+}
+
+// 司法所
+export const changeDeptId = (state, deptId) => {
+    state.deptId = deptId
+}
+
 // 司法局
 export const changeOrgId = (state, orgId) => {
     state.orgId = orgId

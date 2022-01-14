@@ -1,4 +1,14 @@
 // 司法所
+export const changeActorId = ({ commit }, payload) => {
+    commit('changeActorId', payload)
+}
+
+// 司法所
+export const changeDeptId = ({ commit }, payload) => {
+    commit('changeDeptId', payload)
+}
+
+// 司法所
 export const changeOrgId = ({ commit }, payload) => {
     commit('changeOrgId', payload)
 }
