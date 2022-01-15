@@ -145,11 +145,11 @@ export default {
         getPeopleData(val) {
             if (val == '') {
                 this.changeOrgId(this.filterData.justice)
-                this.changeUserId('')
+                this.changeUserId(null)
                 return
             }
             this.changeOrgId(val)
-            this.changeUserId('')
+            this.changeUserId(null)
             this.filterData.name = ''
             this.$axios.get(`/api/v1/display/user/list?actorId=${this.actorId}&deptId=` + val).then(res => {
                 this.peopleOpts = res.data.data.list
@@ -171,6 +171,9 @@ export default {
         },
         // 退出登录
         handleLoginOut() {
+            
+            this.changeOrgId(null)
+            this.changeUserId(null)
             this.$router.push('/')
         }
     },

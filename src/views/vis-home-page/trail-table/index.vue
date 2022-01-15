@@ -7,7 +7,7 @@
             TRAJECTORY DESCRIPTION
         </div>
         <div class="trailTable_filters" v-if="userId">
-            <el-table ref="trailTable" :data="tableData">
+            <el-table ref="trailTable" :data="tableData" highlight-current-row>
                 <el-table-column label="序号" type="index" width="60"></el-table-column>
                 <el-table-column label="定位方式" prop="type" width="100">
                     <template slot-scope="scoped">
@@ -49,7 +49,9 @@ export default {
                 3: '手环',
                 4: '移动基站',
                 5: '电信基站'
-            }
+            },
+            timer1: null,
+            timer2: null
         }
     },
     computed: {
@@ -68,6 +70,10 @@ export default {
     methods: {
         // 获取数据
         getData() {
+            clearInterval(this.timer2)
+            clearTimeout(this.timer1)
+            this.timer1 = null
+            this.timer2 = null
             this.$axios.get(`/api/v1/display/location/path?actorId=${this.actorId}&userId=${this.userId}`).then(res => {
                 let data = res.data.data
                 let geocoder = new AMap.Geocoder({});
@@ -81,8 +87,18 @@ export default {
                         }
                     })
                 })
-                setTimeout(() => {
+                this.timer1 = setTimeout(() => {
                     this.tableData = data
+                    this.$refs.trailTable.setCurrentRow(this.tableData[0])
+                    let i = 0
+                    this.timer2 = setInterval(() => {
+                        i++
+                        this.$refs.trailTable.setCurrentRow(this.tableData[i])
+                        document.getElementsByClassName('current-row')[0].scrollIntoView()
+                        if ( i == this.tableData.length) {
+                            i = -1
+                        }
+                    }, 5000)
                 }, 3 * 1000)
             })
         }
@@ -135,11 +151,10 @@ export default {
         align-items: center;
         justify-content: center;
         float: left;
-        margin-top: -3%;
     }
     .trailTable_titleEN {
         width: 45%;
-        height: 10%;
+        height: 8%;
         font-size: 1rem;
         font-weight: 400;
         color: #2557C7;
@@ -147,7 +162,6 @@ export default {
         float: left;
         text-align: left;
         margin-left: 0.5rem;
-        margin-top: -1%;
     }
 }
 .trailTable_filters {

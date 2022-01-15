@@ -79,7 +79,7 @@ export default {
     margin-bottom: 0.5rem;
     .abnormalTable_filters {
         width: 96%;
-        height: 90%;
+        height: 82%;
         padding: 0;
         overflow: hidden;
         float: left;
@@ -116,6 +116,13 @@ export default {
     background-size: 100% 100%;
 }
 .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+    background: none !important;
+}
+.el-table tr.el-table__row.current-row {
+    background: url(../../../assets/homePage/tr-selected.png) no-repeat center center;
+    background-size: 100% 100%;
+}
+.el-table--enable-row-hover .el-table__body tr.el-table__row.current-row > td.el-table__cell {
     background: none !important;
 }
 </style>
