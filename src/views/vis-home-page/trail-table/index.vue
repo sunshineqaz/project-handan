@@ -158,7 +158,8 @@ export default {
         font-size: 1rem;
         font-weight: 400;
         color: #2557C7;
-        display: inline-block;
+        display: flex;
+        align-items: center;
         float: left;
         text-align: left;
         margin-left: 0.5rem;
