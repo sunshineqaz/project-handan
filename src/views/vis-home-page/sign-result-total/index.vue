@@ -92,6 +92,7 @@ export default {
         },
         isUpdateTime() {
             this.getData()
+            this.handleFilter(0)
         }
     },
     mounted() {
