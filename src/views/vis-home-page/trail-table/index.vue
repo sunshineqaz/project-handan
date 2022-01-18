@@ -1,12 +1,12 @@
 <template>
     <div :class="[userId ? 'trailTable' : 'TrailTableUser']">
-        <div class="trailTable_title" :class="{trailTableZoom: !userId}">
+        <div class="trailTable_title" :class="{trailTableZoom: !userId||userId==''}">
             轨迹描述
         </div>
         <div class="trailTable_titleEN">
             TRAJECTORY DESCRIPTION
         </div>
-        <div class="trailTable_filters" v-if="userId">
+        <div class="trailTable_filters" v-if="userId && userId!=''">
             <el-table ref="trailTable" :data="tableData" highlight-current-row>
                 <el-table-column label="序号" type="index" width="60"></el-table-column>
                 <el-table-column label="定位方式" prop="type" width="100">
@@ -98,7 +98,7 @@ export default {
                         if ( i == this.tableData.length) {
                             i = -1
                         }
-                    }, 5000)
+                    }, 1000)
                 }, 3 * 1000)
             })
         }

@@ -104,7 +104,7 @@ export default {
                 //对第一条线路（即索引 0）创建一个巡航器
                 let navg1 = pathSimplifierIns.createPathNavigator(0, {
                     loop: true, //循环播放
-                    speed: 5 //巡航速度，单位千米/小时
+                    speed: 10 //巡航速度，单位千米/小时
                 });
                 setTimeout(() => {
                     navg1.start();

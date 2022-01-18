@@ -102,6 +102,8 @@ export default {
                 this.getUserPosition()
                 this.getPersonInfo()
                 this.getBorderData()
+            } else {
+                this.isShowPosition = false
             }
         },
         isUpdateTime() {
