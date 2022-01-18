@@ -344,7 +344,10 @@ export default {
                         return pathData.path;
                     },
                     renderOptions: {
-                        renderAllPointsIfNumberBelow: 100 //绘制路线节点，如不需要可设置为-1
+                        renderAllPointsIfNumberBelow: 1 //绘制路线节点，如不需要可设置为-1
+                    },
+                    getHoverTitle: function() {
+                        return ''
                     }
                 });
                 window.pathSimplifierIns = pathSimplifierIns;
