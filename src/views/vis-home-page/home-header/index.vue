@@ -11,7 +11,7 @@
             </el-row>
         </div>
         <span class="homeHeader_title">
-            邯郸市邯山区司法局指挥中心
+            邯山区司法局指挥中心
         </span>
         <div class="homeHeader-right">
             <div class="homeHeader-right_select">
@@ -162,12 +162,32 @@ export default {
         },
         // 全屏
         handleScreen() {
+            console.log(screenfull, '...')
             if (!screenfull.enabled) {
                 this.$message("您的浏览器不能全屏");
                 return false;
             }
-            screenfull.toggle();
-            this.$message.success("全屏啦");
+            if (!screenfull.isFullscreen) {
+                screenfull.toggle();
+                this.$message.success("全屏啦");
+            } else {
+                this.$confirm('是否退出?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '退出全屏'
+                    });
+                    screenfull.toggle();
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消退出'
+                    });         
+                });
+            }
         },
         // 退出登录
         handleLoginOut() {
