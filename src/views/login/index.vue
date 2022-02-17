@@ -25,7 +25,6 @@
 
 <script>
 import Base64  from 'base-64';
-import { mapActions } from 'vuex'
 export default {
     data() {
         return {
@@ -51,7 +50,6 @@ export default {
         this.getCaptcha()
     },
     methods: {
-        ...mapActions(['changeActorId', 'changeDeptId']),
         changeCaptcha() {
             this.getCaptcha()
         },
@@ -108,9 +106,13 @@ export default {
                             })
                             return
                         } else {
-                            this.changeActorId(res.data.data.actorId)
-                            this.changeDeptId(res.data.data.deptId)
-                            this.$router.push('homePage')
+                            this.$router.push({
+                                path: 'homePage',
+                                query: {
+                                    actorId: res.data.data.actorId,
+                                    deptId: res.data.data.deptId
+                                }
+                            })
                         }
                     })
                 }

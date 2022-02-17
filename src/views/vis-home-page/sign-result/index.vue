@@ -193,7 +193,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['changeShowDetail']),
+        ...mapActions(['changeShowDetail', 'changeUserId']),
         // 滚动
         scrollAnimation() {
             clearInterval(this.timer)
@@ -293,7 +293,7 @@ export default {
         initMap() {
             this.map = new AMap.Map("track_path", {
                 mapStyle: "amap://styles/darkblue",
-                center: [116.397559, 39.89621],
+                center: [114.48375, 36.60006],
                 zoom: 14
             });
 
@@ -382,6 +382,7 @@ export default {
         },
         handleClose() {
             this.isShow = false
+            this.changeUserId(null)
         }
     },
     beforeDestroy() {

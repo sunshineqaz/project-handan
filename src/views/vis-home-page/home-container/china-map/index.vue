@@ -155,7 +155,7 @@ export default {
         initMap() {
             this.map = new AMap.Map('mapContainer', {
                 mapStyle: "amap://styles/darkblue",
-                center: [115.97, 39.48],
+                center: [114.48375, 36.60006],
                 zoom: this.zoomArray[this.zoomIndex]
             });
             this.map.clearMap()
@@ -271,6 +271,7 @@ export default {
         },
         handleClose() {
             this.isShowPosition = false
+            this.changeUserId(null)
         }
     },
     beforeDestroy() {

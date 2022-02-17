@@ -171,30 +171,40 @@ export default {
                 screenfull.toggle();
                 this.$message.success("全屏啦");
             } else {
-                this.$confirm('是否退出?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
+                // this.$confirm('是否退出?', '提示', {
+                //     confirmButtonText: '确定',
+                //     cancelButtonText: '取消',
+                //     type: 'warning'
+                // }).then(() => {
                     this.$message({
                         type: 'success',
                         message: '退出全屏'
                     });
                     screenfull.toggle();
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '取消退出'
-                    });         
-                });
+                // }).catch(() => {
+                //     this.$message({
+                //         type: 'info',
+                //         message: '取消退出'
+                //     });         
+                // });
             }
         },
         // 退出登录
         handleLoginOut() {
-            
-            this.changeOrgId(null)
-            this.changeUserId(null)
-            this.$router.push('/')
+            this.$confirm('是否退出?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.changeOrgId(null)
+                this.changeUserId(null)
+                this.$router.push('/')
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '取消退出'
+                });         
+            });
         }
     },
     beforeDestroy() {

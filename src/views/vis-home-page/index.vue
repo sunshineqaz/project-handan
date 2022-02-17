@@ -12,10 +12,18 @@
 <script>
 import homeHeader from './home-header/index'
 import homeContainer from './home-container'
+import { mapActions } from 'vuex'
 export default {
     components: {
         homeHeader,
         homeContainer
+    },
+    created() {
+        this.changeActorId(this.$route.query.actorId);
+        this.changeDeptId(this.$route.query.deptId);
+    },
+    methods: {
+        ...mapActions(['changeActorId', 'changeDeptId'])
     }
 }
 </script>

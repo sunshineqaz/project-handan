@@ -41,7 +41,7 @@ export default {
         initMap() {
             this.map = new AMap.Map("container", {
                 mapStyle: "amap://styles/darkblue",
-                center: [116.397559, 39.89621],
+                center: [114.48375, 36.60006],
                 zoom: 11
             });
             this.marker = new AMap.Marker({
