@@ -1,7 +1,7 @@
 <template>
     <div class="login">
         <div class="login-header">
-            邯山区司法局指挥中心
+           邯山区司法局智慧矫正中心
         </div>
         <div class="login-form">
             <el-form :model="loginForm" ref="loginForm" :rules="loginRules">

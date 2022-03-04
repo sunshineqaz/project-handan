@@ -11,7 +11,7 @@
             </el-row>
         </div>
         <span class="homeHeader_title">
-            邯山区司法局指挥中心
+           邯山区司法局智慧矫正中心
         </span>
         <div class="homeHeader-right">
             <div class="homeHeader-right_select">
